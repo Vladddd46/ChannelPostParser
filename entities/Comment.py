@@ -16,6 +16,8 @@ class Comment:
         from_user: User,
         reactions: List[Reaction],
         views: int,
+        is_reply: bool,
+        is_forward: bool
     ):
         self._text = text
         self._datetime = datetime
@@ -23,6 +25,8 @@ class Comment:
         self._reactions = reactions
         self._views = views
         self._m_id = m_id
+        self._is_reply = is_reply
+        self._is_forward = is_forward
         # self._contains_media = bool // TODO: add this feature
         # self._media = [Media] // TODO: add this feature
 
@@ -33,6 +37,22 @@ class Comment:
     @text.setter
     def text(self, value: str):
         self._text = value
+
+    @property
+    def is_reply(self) -> bool:
+        return self._is_reply
+
+    @is_reply.setter
+    def is_reply(self, value: bool):
+        self._is_reply = value
+
+    @property
+    def is_forward(self) -> bool:
+        return self._is_forward
+
+    @is_forward.setter
+    def is_forward(self, value: bool):
+        self._is_forward = value
 
     @property
     def m_id(self):
@@ -88,6 +108,8 @@ class Comment:
             "from_user": self.from_user.to_json(),
             "reactions": [reaction.to_json() for reaction in self._reactions],
             "views": self.views,
+            "is_reply": self.is_reply,
+            "is_forward": self.is_forward
         }
         return comment_json
 

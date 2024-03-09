@@ -17,6 +17,8 @@ class Post:
         pinned: bool,
         views: int,
         reactions: List[Reaction],
+        is_reply: bool,
+        is_forward: bool
     ):
         self._post_id = post_id
         self._channel = channel
@@ -26,6 +28,8 @@ class Post:
         self._pinned = pinned
         self._views = views
         self._reactions = reactions
+        self._is_reply = is_reply
+        self._is_forward = is_forward
 
     @property
     def post_id(self) -> int:
@@ -34,6 +38,22 @@ class Post:
     @post_id.setter
     def post_id(self, value: int):
         self._post_id = value
+
+    @property
+    def is_reply(self) -> bool:
+        return self._is_reply
+
+    @is_reply.setter
+    def is_reply(self, value: bool):
+        self._is_reply = value
+
+    @property
+    def is_forward(self) -> bool:
+        return self._is_forward
+
+    @is_forward.setter
+    def is_forward(self, value: bool):
+        self._is_forward = value
 
     @property
     def channel(self) -> Channel:
@@ -107,6 +127,8 @@ class Post:
             "pinned": self.pinned,
             "views": self.views,
             "reactions": [reaction.to_json() for reaction in self._reactions],
+            "is_reply": self.is_reply,
+            "is_forward": self.is_forward
         }
         return post_json
 
