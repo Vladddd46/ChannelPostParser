@@ -98,3 +98,9 @@ class User:
             "is_scam": self.is_scam,
         }
         return user_json
+
+    def __str__(self):
+        return f"User: id={self._uid}, username={self._username}, name={self._first_name} {self._last_name}, is_premium={self._is_premium}"
+
+    def __repr__(self):
+        return f"User: id={self._uid}, username={self._username}, name={self._first_name} {self._last_name}, is_premium={self._is_premium}"

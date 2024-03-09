@@ -6,7 +6,6 @@
 class Channel:
     def __init__(
         self,
-        channel_name: str,
         num_of_subscribers: int,
         channel_id: int,
         title: str,
@@ -14,7 +13,6 @@ class Channel:
         scam: bool,
         user_name: str,
     ):
-        self._channel_name = channel_name
         self._num_of_subscribers = num_of_subscribers
         self._channel_id = channel_id
         self._title = title
@@ -22,14 +20,6 @@ class Channel:
         self._verified = verified
         self._scam = scam
         self._user_name = user_name
-
-    @property
-    def channel_name(self) -> str:
-        return self._channel_name
-
-    @channel_name.setter
-    def channel_name(self, value: str):
-        self._channel_name = value
 
     @property
     def num_of_subscribers(self) -> int:
@@ -89,7 +79,6 @@ class Channel:
 
     def to_json(self) -> dict:
         channel_json = {
-            "channel_name": self.channel_name,
             "num_of_subscribers": self.num_of_subscribers,
             "channel_id": self.channel_id,
             "title": self.title,
@@ -99,3 +88,9 @@ class Channel:
             "user_name": self.user_name,
         }
         return channel_json
+
+    def __str__(self):
+        return f"Channel : {self._channel_id} | {self._title} | subscribers={self._num_of_subscribers}"
+
+    def __repr__(self):
+        return f"Channel : {self._channel_id} | {self._title} | subscribers={self._num_of_subscribers}"

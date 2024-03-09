@@ -1,8 +1,8 @@
 # @ author: vladddd46
 # @ date:   09.03.2024
 # @ brief:  representation of telegram post.
-from Channel import Channel
-from Reaction import Reaction
+from entities.Channel import Channel
+from entities.Reaction import Reaction
 from datetime import datetime
 from typing import List
 
@@ -109,3 +109,9 @@ class Post:
             "reactions": [reaction.to_json() for reaction in self._reactions],
         }
         return post_json
+
+    def __str__(self):
+        return f"Post: id={self._post_id} | {self._channel} | {self._datetime} | text={self._text} | views={self._views}"
+
+    def __repr__(self):
+        return f"Post: id={self._post_id} | {self._channel} | {self._datetime} | text={self._text} | views={self._views}"

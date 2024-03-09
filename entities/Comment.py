@@ -1,8 +1,8 @@
 # @ author: vladddd46
 # @ date:   09.03.2024
 # @ brief:  representation of telegram channel`s comment.
-from User import User
-from Reaction import Reaction
+from entities.User import User
+from entities.Reaction import Reaction
 from datetime import datetime
 from typing import List
 
@@ -10,6 +10,7 @@ from typing import List
 class Comment:
     def __init__(
         self,
+        m_id: int,
         text: str,
         datetime: datetime,
         from_user: User,
@@ -21,6 +22,7 @@ class Comment:
         self._from_user = from_user
         self._reactions = reactions
         self._views = views
+        self._m_id = m_id
         # self._contains_media = bool // TODO: add this feature
         # self._media = [Media] // TODO: add this feature
 
@@ -31,6 +33,14 @@ class Comment:
     @text.setter
     def text(self, value: str):
         self._text = value
+
+    @property
+    def m_id(self):
+        return self._m_id
+
+    @m_id.setter
+    def m_id(self, value: str):
+        self._m_id = value
 
     @property
     def datetime(self) -> datetime:
@@ -73,9 +83,16 @@ class Comment:
     def to_json(self) -> dict:
         comment_json = {
             "text": self.text,
+            "id": self.m_id,
             "datetime": self.datetime,
             "from_user": self.from_user.to_json(),
             "reactions": [reaction.to_json() for reaction in self._reactions],
             "views": self.views,
         }
         return comment_json
+
+    def __str__(self):
+        return f"{self._m_id}| {self._datetime} | {self.from_user}='{self.text}'"
+
+    def __repr__(self):
+        return f"{self._m_id}| {self._datetime} | {self.from_user}='{self.text}'"

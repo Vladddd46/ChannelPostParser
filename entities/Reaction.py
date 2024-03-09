@@ -10,7 +10,7 @@ class ReactionType(Enum):
     UNDEFINED = "UNDEFINED"
 
 
-def __determineReactionTypeFromEmoticon(emoticon: str):
+def _determineReactionTypeFromEmoticon(emoticon: str):
     # TODO: add more reactions.
     reaction_type = ReactionType.UNDEFINED
     if emoticon == "🥳":
@@ -21,9 +21,10 @@ def __determineReactionTypeFromEmoticon(emoticon: str):
 
 
 class Reaction:
-    def __init__(self, emoticon: str):
+    def __init__(self, emoticon: str, count: int):
         self._emoticon = emoticon
-        self._rtype = __determineReactionTypeFromEmoticon(emoticon)
+        self._rtype = _determineReactionTypeFromEmoticon(emoticon)
+        self._count = count
 
     def __eq__(self, other):
         if not isinstance(other, Reaction):
@@ -42,6 +43,14 @@ class Reaction:
         self._emoticon = value
 
     @property
+    def count(self) -> int:
+        return self._count
+
+    @count.setter
+    def count(self, value: int):
+        self._count = value
+
+    @property
     def rtype(self) -> str:
         return self._rtype
 
@@ -53,5 +62,12 @@ class Reaction:
         comment_json = {
             "emoticon": self._emoticon,
             "rtype": self._rtype,
+            "count": self._count,
         }
         return comment_json
+
+    def __str__(self):
+        return f"Reaction: emoticon={self._emoticon}, count={self._count}, type={self._rtype.name}"
+
+    def __repr__(self):
+        return f"Reaction: emoticon={self._emoticon}, count={self._count}, type={self._rtype.name}"
