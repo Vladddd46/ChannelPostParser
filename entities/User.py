@@ -21,6 +21,15 @@ class User:
         self._is_premium = is_premium
         self._is_verified = is_verified
         self._is_scam = is_scam
+        # self._photo = user_avatar // TODO: add this feature.
+
+    def __eq__(self, other):
+        if not isinstance(other, User):
+            return False
+        return self.uid == other.uid
+
+    def __hash__(self):
+        return hash(self.uid)
 
     @property
     def uid(self) -> int:
@@ -77,3 +86,15 @@ class User:
     @is_scam.setter
     def is_scam(self, value: bool):
         self._is_scam = value
+
+    def to_json(self):
+        user_json = {
+            "uid": self.uid,
+            "username": self.username,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "is_premium": self.is_premium,
+            "is_verified": self.is_verified,
+            "is_scam": self.is_scam,
+        }
+        return user_json
