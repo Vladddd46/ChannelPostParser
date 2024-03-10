@@ -8,7 +8,7 @@ import asyncio
 
 CHANNEL = "@ssternenko"
 SESSION = "./tmp/anon"
-POSTS_LIMIT = 1  # number of posts will be fetched from channel.
+POSTS_LIMIT = 10  # number of posts will be fetched from channel.
 
 
 async def main(api_id, api_hash):
@@ -19,9 +19,12 @@ async def main(api_id, api_hash):
             posts[message.id] = {"post": message, "comments": []}
 
             if message.reply_to_msg_id:
-                async for comment in client.iter_messages(chat, reply_to=message.id):
-                    posts[message.id]["comments"].append(comment)
-
+                try:
+                    async for comment in client.iter_messages(chat, reply_to=message.id):
+                        posts[message.id]["comments"].append(comment)
+                except:
+                    # this usually occurs when messege.text is empty.
+                    print("Excetion...")
 
 if __name__ == "__main__":
     posts = {}
@@ -34,11 +37,12 @@ if __name__ == "__main__":
         text = msg.text
         datetime = msg.date
         reactions = []
-        for reaction in msg.reactions.results:
-            tmp_reaction = {}
-            tmp_reaction["emoticon"] = reaction.reaction.emoticon
-            tmp_reaction["count"] = reaction.count
-            reactions.append(tmp_reaction)
+        if msg.reactions:
+            for reaction in msg.reactions.results:
+                tmp_reaction = {}
+                tmp_reaction["emoticon"] = reaction.reaction.emoticon
+                tmp_reaction["count"] = reaction.count
+                reactions.append(tmp_reaction)
         msg_comments = []
         for comment in comments:
             tmp_comment = {}
