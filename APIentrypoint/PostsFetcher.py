@@ -2,11 +2,12 @@
 # @ date:   10.03.2024
 # @ brief:  Entrypoint class, that provides
 # 			API for getting posts from service
-from fetchers.FetcherInterface import FetcherInterface
-from entities.Post import Post
-from typing import List
 from datetime import datetime
+from typing import List
+
 from config import SERVICE_NAME
+from entities.Post import Post
+from fetchers.FetcherInterface import FetcherInterface
 from fetchers.TelegramFetcher import TelegramFetcher
 
 

@@ -2,15 +2,17 @@
 # @ date:   10.03.2024
 # @ brief:  Telegram fetcher class.
 #           Implements fetching posts from telegram
-from fetchers.FetcherInterface import FetcherInterface
-from tmp.creds import api_id, api_hash
+import asyncio
+from datetime import datetime
+from typing import List
+
+from adaptors.TelethonAdaptors import convert_telethon_post
 from config import SESSION
 from entities.Post import Post
-from typing import List
-from datetime import datetime
 from telethon import TelegramClient, events
-import asyncio
-from adaptors.TelethonAdaptors import convert_telethon_post
+from tmp.creds import api_hash, api_id
+
+from fetchers.FetcherInterface import FetcherInterface
 
 
 class TelegramFetcher(FetcherInterface):

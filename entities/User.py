@@ -7,12 +7,12 @@ class User:
     def __init__(
         self,
         uid: int,
-        username: str,
-        first_name: str,
-        last_name: str,
-        is_premium: bool,
-        is_verified: bool,
-        is_scam: bool,
+        username: str = "",
+        first_name: str = "",
+        last_name: str = "",
+        is_premium: bool = False,
+        is_verified: bool = False,
+        is_scam: bool = False,
     ):
         self._uid = uid
         self._username = username

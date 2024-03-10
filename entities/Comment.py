@@ -1,10 +1,11 @@
 # @ author: vladddd46
 # @ date:   09.03.2024
 # @ brief:  representation of channel`s comment.
-from entities.User import User
-from entities.Reaction import Reaction
 from datetime import datetime
 from typing import List
+
+from entities.Reaction import Reaction
+from entities.User import User
 
 
 class Comment:
@@ -17,7 +18,7 @@ class Comment:
         reactions: List[Reaction],
         views: int,
         is_reply: bool,
-        is_forward: bool,
+        contains_media: bool,
     ):
         self._text = text
         self._datetime = datetime
@@ -26,8 +27,7 @@ class Comment:
         self._views = views
         self._m_id = m_id
         self._is_reply = is_reply
-        self._is_forward = is_forward
-        # self._contains_media = bool // TODO: add this feature
+        self._contains_media = contains_media
         # self._media = [Media] // TODO: add this feature
 
     @property
@@ -39,20 +39,20 @@ class Comment:
         self._text = value
 
     @property
+    def contains_media(self) -> str:
+        return self._contains_media
+
+    @contains_media.setter
+    def contains_media(self, value: str):
+        self._contains_media = value
+
+    @property
     def is_reply(self) -> bool:
         return self._is_reply
 
     @is_reply.setter
     def is_reply(self, value: bool):
         self._is_reply = value
-
-    @property
-    def is_forward(self) -> bool:
-        return self._is_forward
-
-    @is_forward.setter
-    def is_forward(self, value: bool):
-        self._is_forward = value
 
     @property
     def m_id(self):
@@ -109,7 +109,7 @@ class Comment:
             "reactions": [reaction.to_json() for reaction in self._reactions],
             "views": self.views,
             "is_reply": self.is_reply,
-            "is_forward": self.is_forward,
+            "contains_media": self.contains_media,
         }
         return comment_json
 

@@ -6,9 +6,9 @@
 class Channel:
     def __init__(
         self,
-        num_of_subscribers: int,
         channel_id: int,
         title: str,
+        num_of_subscribers: int,
         verified: bool,
         scam: bool,
         user_name: str,

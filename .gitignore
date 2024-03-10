@@ -1,3 +1,4 @@
 creds.py
 *.session
 __pycache__
+*.json

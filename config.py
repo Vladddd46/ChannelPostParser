@@ -6,3 +6,6 @@ SERVICE_NAME = "telegram"
 
 # path to session file. [used for telegram fetcher]
 SESSION = "./tmp/anon"
+
+# path, where example from mvp will be saved.
+EXAMPLE_FILES_PATH = "./tmp/example_data.json"

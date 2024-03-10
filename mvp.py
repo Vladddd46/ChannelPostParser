@@ -1,10 +1,12 @@
 # @ author: vladddd46
 # @ date:   10.03.2024
-# @ brief:  code snippents of telethon, 
+# @ brief:  code snippents of telethon,
 # 			that will be user in the project.
-from telethon import TelegramClient, events
-from tmp.creds import api_id, api_hash
 import asyncio
+
+from telethon import TelegramClient, events
+
+from tmp.creds import api_hash, api_id
 
 CHANNEL = "@ssternenko"
 SESSION = "./tmp/anon"
@@ -20,11 +22,14 @@ async def main(api_id, api_hash):
 
             if message.reply_to_msg_id:
                 try:
-                    async for comment in client.iter_messages(chat, reply_to=message.id):
+                    async for comment in client.iter_messages(
+                        chat, reply_to=message.id
+                    ):
                         posts[message.id]["comments"].append(comment)
                 except:
                     # this usually occurs when messege.text is empty.
                     print("Excetion...")
+
 
 if __name__ == "__main__":
     posts = {}

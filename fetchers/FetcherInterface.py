@@ -3,8 +3,8 @@
 # @ brief:  Interface to Fetcher class.
 #           It is responsible for fetching data from services.
 #           Each service fetcher (telegram fetcher) should inherit this interface.
-from datetime import datetime
 from abc import ABC, abstractmethod
+from datetime import datetime
 
 
 class FetcherInterface:

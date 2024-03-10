@@ -1,27 +1,27 @@
 # @ author: vladddd46
 # @ date:   09.03.2024
 # @ brief:  representation of post.
-from entities.Channel import Channel
-from entities.Reaction import Reaction
 from datetime import datetime
 from typing import List
+
+from entities.Comment import Comment
+from entities.Reaction import Reaction
 
 
 class Post:
     def __init__(
         self,
         post_id: int,
-        channel: Channel,
         datetime: datetime,
         text: str,
         pinned: bool,
         views: int,
         reactions: List[Reaction],
         is_reply: bool,
-        is_forward: bool,
+        contains_media: bool,
+        comments: List[Comment] = [],
     ):
         self._post_id = post_id
-        self._channel = channel
         self._datetime = datetime
         self._text = text
         # self._media = [media]  # TODO: add this feature
@@ -29,7 +29,11 @@ class Post:
         self._views = views
         self._reactions = reactions
         self._is_reply = is_reply
-        self._is_forward = is_forward
+        self._contains_media = contains_media
+        self._comments = comments
+
+    def add_comment(self, comment: Comment):
+        self._comments.append(comment)
 
     @property
     def post_id(self) -> int:
@@ -40,30 +44,28 @@ class Post:
         self._post_id = value
 
     @property
+    def comments(self) -> List[Comment]:
+        return self._post_id
+
+    @comments.setter
+    def comments(self, value: List[Comment]):
+        self._comments = value
+
+    @property
+    def contains_media(self) -> int:
+        return self._contains_media
+
+    @contains_media.setter
+    def contains_media(self, value: int):
+        self._contains_media = value
+
+    @property
     def is_reply(self) -> bool:
         return self._is_reply
 
     @is_reply.setter
     def is_reply(self, value: bool):
         self._is_reply = value
-
-    @property
-    def is_forward(self) -> bool:
-        return self._is_forward
-
-    @is_forward.setter
-    def is_forward(self, value: bool):
-        self._is_forward = value
-
-    @property
-    def channel(self) -> Channel:
-        return self._channel
-
-    @channel.setter
-    def channel(self, value: Channel):
-        if not isinstance(value, Channel):
-            raise ValueError("The 'channel' must be an instance of the Channel class.")
-        self._channel = value
 
     @property
     def datetime(self) -> datetime:
@@ -120,7 +122,6 @@ class Post:
     def to_json(self) -> dict:
         post_json = {
             "post_id": self.post_id,
-            "channel": self.channel.to_json(),
             "datetime": self.datetime,
             "text": self.text,
             # "media": [media.to_json() for media in self._media],  # TODO Uncomment when the Media class is defined
@@ -128,12 +129,13 @@ class Post:
             "views": self.views,
             "reactions": [reaction.to_json() for reaction in self._reactions],
             "is_reply": self.is_reply,
-            "is_forward": self.is_forward,
+            "media_in_post": self.contains_media,
+            "comments": [cmnt.to_json() for cmnt in self._comments],
         }
         return post_json
 
     def __str__(self):
-        return f"Post: id={self._post_id} | {self._channel} | {self._datetime} | text={self._text} | views={self._views}"
+        return f"Post: id={self._post_id} | {self._datetime} | text={self._text} | views={self._views}"
 
     def __repr__(self):
-        return f"Post: id={self._post_id} | {self._channel} | {self._datetime} | text={self._text} | views={self._views}"
+        return f"Post: id={self._post_id} | {self._datetime} | text={self._text} | views={self._views}"
