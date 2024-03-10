@@ -60,7 +60,7 @@ class Reaction:
 
     @property
     def document_id(self) -> int:
-        return self._emoticon
+        return self._document_id
 
     @document_id.setter
     def document_id(self, value: int):
