@@ -18,7 +18,7 @@ class Post:
         views: int,
         reactions: List[Reaction],
         is_reply: bool,
-        is_forward: bool
+        is_forward: bool,
     ):
         self._post_id = post_id
         self._channel = channel
@@ -128,7 +128,7 @@ class Post:
             "views": self.views,
             "reactions": [reaction.to_json() for reaction in self._reactions],
             "is_reply": self.is_reply,
-            "is_forward": self.is_forward
+            "is_forward": self.is_forward,
         }
         return post_json
 

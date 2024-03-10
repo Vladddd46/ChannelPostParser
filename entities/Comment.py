@@ -17,7 +17,7 @@ class Comment:
         reactions: List[Reaction],
         views: int,
         is_reply: bool,
-        is_forward: bool
+        is_forward: bool,
     ):
         self._text = text
         self._datetime = datetime
@@ -109,7 +109,7 @@ class Comment:
             "reactions": [reaction.to_json() for reaction in self._reactions],
             "views": self.views,
             "is_reply": self.is_reply,
-            "is_forward": self.is_forward
+            "is_forward": self.is_forward,
         }
         return comment_json
 

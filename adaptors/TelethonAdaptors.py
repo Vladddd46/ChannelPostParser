@@ -39,7 +39,7 @@ def convert_telethon_comment(comment):
 
 
 def convert_telethon_post(post):
-    pass
+    print("Hello from convert_telethon_post")
 
 
 def convert_telethon_user(user):

@@ -7,45 +7,58 @@ from tmp.creds import api_id, api_hash
 from config import SESSION
 from entities.Post import Post
 from typing import List
+from datetime import datetime
+from telethon import TelegramClient, events
+import asyncio
+from adaptors.TelethonAdaptors import convert_telethon_post
+
 
 class TelegramFetcher(FetcherInterface):
-	service_name = "telegram" # override
+    service_name = "telegram"  # override
 
-	def __init__(self, ):
-		self.client = TelegramClient(SESSION, api_id, api_hash)
-		self.client.start()
+    def __str__(self):
+        return f"Fetcher for service {self.service_name}: addr={id(self)}"
 
-	def __del__(self):
-		self.client.disconnect()
+    def __repr__(self):
+        return f"Fetcher for service {self.service_name}: addr={id(self)}"
 
-	async def __retrieve_posts(self, channel_username: str, limit: int):
-		chat = await client.get_entity(channel_username)
-		async for message in client.iter_messages(chat, limit=limit):
-			# message object, that represents post
+    def __init__(self):
+        self.client = None
 
-			if message.reply_to_msg_id:
-				async for comment in client.iter_messages(chat, reply_to=message.id):
-					# message(comment) object, that represents post
-		# return List of Posts
+    async def __retrieve_posts(self, channel_username: str, limit: int):
+        chat = await self.client.get_entity(channel_username)
+        # TODO: make implementation here
 
-	# overrride
-	async def get_last_post(self, channel_username: str):
-		res = await self.__retrieve_posts(channel_username, 1)
-		return res
+    # overrride
+    async def setup(self):
+        self.client = await TelegramClient(SESSION, api_id, api_hash).start()
 
-	# overrride
-	async def get_last_n_posts(self, channel_username: str, num: int):
-		pass
+    # overrride
+    async def cleanup(self):
+        try:
+            await self.client.disconnect()
+        except Exception as e:
+            print(f"Error during Telethon client disconnect: {e}")  # TODO: add logger
+            exit(1)
 
-	# overrride
-	async def get_posts_by_date_range(self, channel_username: str, from_date: datetime, to_date: datetime):
-		pass
+    # overrride
+    async def get_last_post(self, channel_username: str):
+        print("get_last_post=", channel_username)
 
-	# overrride
-	async def get_posts_by_date(self, channel_username: str, date: datetime):
-		pass
+    # overrride
+    async def get_last_n_posts(self, channel_username: str, num: int):
+        print("get_last_n_posts=", channel_username)
 
-	# overrride
-	async def get_post_by_id(self, channel_username: str, pid: int):
-		pass
+    # overrride
+    async def get_posts_by_date_range(
+        self, channel_username: str, from_date: datetime, to_date: datetime
+    ):
+        print("get_posts_by_date_range=", channel_username)
 
+    # overrride
+    async def get_posts_by_date(self, channel_username: str, date: datetime):
+        print("get_posts_by_date=", channel_username)
+
+    # overrride
+    async def get_post_by_id(self, channel_username: str, pid: int):
+        print("get_post_by_id=", channel_username)
