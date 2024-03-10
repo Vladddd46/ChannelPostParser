@@ -1,3 +1,7 @@
+# @ author: vladddd46
+# @ date:   10.03.2024
+# @ brief:  code snippents of telethon, 
+# 			that will be user in the project.
 from telethon import TelegramClient, events
 from tmp.creds import api_id, api_hash
 import asyncio

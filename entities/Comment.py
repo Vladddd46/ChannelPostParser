@@ -1,6 +1,6 @@
 # @ author: vladddd46
 # @ date:   09.03.2024
-# @ brief:  representation of telegram channel`s comment.
+# @ brief:  representation of channel`s comment.
 from entities.User import User
 from entities.Reaction import Reaction
 from datetime import datetime

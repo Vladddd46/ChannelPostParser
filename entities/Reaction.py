@@ -1,6 +1,6 @@
 # @ author: vladddd46
 # @ date:   09.03.2024
-# @ brief:  representation of telegram reaction on post/message.
+# @ brief:  representation of reaction on post/message.
 from enum import Enum
 
 

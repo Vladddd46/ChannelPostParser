@@ -1,6 +1,6 @@
 # @ author: vladddd46
 # @ date:   09.03.2024
-# @ brief:  representation of telegram post.
+# @ brief:  representation of post.
 from entities.Channel import Channel
 from entities.Reaction import Reaction
 from datetime import datetime

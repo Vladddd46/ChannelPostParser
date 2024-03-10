@@ -1,6 +1,6 @@
 # @ author: vladddd46
 # @ date:   09.03.2024
-# @ brief:  representation of telegram channel.
+# @ brief:  representation of channel.
 
 
 class Channel:

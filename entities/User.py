@@ -1,6 +1,6 @@
 # @ author: vladddd46
 # @ date:   04.03.2024
-# @ brief:  representation of telegram user.
+# @ brief:  representation of user.
 
 
 class User:
