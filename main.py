@@ -1,7 +1,7 @@
 import asyncio
 from datetime import datetime
 
-from APIentrypoint.PostsFetcher import PostsFetcher, get_posts_fetcher
+from entrypoints.PostsFetcher import PostsFetcher, get_posts_fetcher
 
 
 async def posts_retriever():
