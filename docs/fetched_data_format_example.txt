@@ -1,0 +1,45 @@
+[
+    {
+        "id": "int",
+        "title": "str",
+        "subscribers": "int",
+        "posts": [
+            {
+                "id": "int",
+                "datetime": "datetime",
+                "text": "str",
+                "views": "int",
+                "reactions": [
+                    {
+                        "is_custom": "bool",
+                        "emoticon": "str",
+                        "count": "int"
+                    }
+                ],
+                "contains_media": "bool",
+                "comments": [
+                    {
+                        "id": "int",
+                        "datetime": "datetime",
+                        "text": "str",
+                        "from_user": {
+                            "id": "int",
+                            "first_name": "str",
+                            "last_name": "str",
+                            "is_premium": "bool",
+                            "is_verified": "bool"
+                        },
+                        "reactions": [
+                            {
+                                "is_custom": "bool",
+                                "emoticon": "str",
+                                "count": "int"
+                            }
+                        ],
+                        "contains_media": "bool"
+                    }
+                ]
+            }
+        ]
+    }
+]
