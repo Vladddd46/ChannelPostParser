@@ -1,5 +1,5 @@
 <h3>Introduction</h3>
-<p>The purpose of this project is to fetch posts data social media services/messangers/etc.</p>
+<p>The purpose of this project is to fetch posts from social media services/messangers/etc.</p>
 <p>The posts are retrieved from services and processed depending on selected function.</p>
 <p>The projects is designed so you could easily extend it with new services.<br>For more info ./docs</p>
 
