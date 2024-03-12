@@ -14,6 +14,15 @@ from fetchers.TelegramFetcher import TelegramFetcher
 class PostsFetcher:
     def __init__(self, fetcher: FetcherInterface):
         self._fetcher = fetcher
+        self._is_setup = False
+        self._is_cleanup = True
+
+    def __del__(self):
+        if self._is_cleanup == False:
+            print(
+                "Error: fetcher was not cleaned up... You have to always cleanup fetcher after using it..."
+            )  # TODO: add loger
+            exit(1)
 
     def __str__(self):
         return str(self._fetcher)
@@ -21,22 +30,51 @@ class PostsFetcher:
     def __repr__(self):
         return str(self._fetcher)
 
+    def validate_setup(func):
+        def wrapper(self, *args, **kwargs):
+            if not self._is_setup:
+                print(
+                    "Error: operation cannot be done, fetcher is not set up"
+                )  # TODO: add logger
+                exit(1)
+            return func(self, *args, **kwargs)
+
+        return wrapper
+
     async def setup(self):
+        if self._is_setup == True:
+            print(
+                "Error: cannot setup: Posts fetcher is already setted up."
+            )  # TODO: add logger
+            exit(1)
+
         await self._fetcher.setup()
+        self._is_setup = True
+        self._is_cleanup = False
 
     async def cleanup(self):
+        if self._is_setup == False:
+            print(
+                "Error: cannot cleanup: Posts fetcher is not setted up."
+            )  # TODO: add logger
+            exit(1)
         await self._fetcher.cleanup()
+        self._is_setup = False
+        self._is_cleanup = True
 
+    @validate_setup
     async def get_last_post(self, channel_username: str):  # TODO: return type -> Post
         res = await self._fetcher.get_last_post(channel_username)
         return res
 
+    @validate_setup
     async def get_last_n_posts(
         self, channel_username: str, num: int
     ):  # TODO: return type -> List[Post]
         res = await self._fetcher.get_last_n_posts(channel_username, num)
         return res
 
+    @validate_setup
     async def get_posts_by_date_range(
         self, channel_username: str, from_date: datetime, to_date: datetime
     ):  # TODO: return type -> List[Post]
@@ -45,12 +83,14 @@ class PostsFetcher:
         )
         return res
 
+    @validate_setup
     async def get_posts_by_date(
         self, channel_username: str, date: datetime
     ):  # TODO: return type -> List[Post]
         res = await self._fetcher.get_posts_by_date(channel_username, date)
         return res
 
+    @validate_setup
     async def get_post_by_id(
         self, channel_username: str, pid: int
     ):  # TODO: return type -> List[Post]
@@ -60,7 +100,7 @@ class PostsFetcher:
 
 # Constructs PostsFetcher, which is responsible
 #  for getting posts from service(s).
-async def get_posts_fetcher():
+async def get_posts_fetcher() -> PostsFetcher:
     fetcher = None
     if SERVICE_NAME == "telegram":
         fetcher = TelegramFetcher()
