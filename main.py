@@ -1,24 +1,41 @@
 import asyncio
+import time
 from datetime import datetime
 
-from entrypoints.PostsFetcher import PostsFetcher, get_posts_fetcher
+from data_processors.dump_data_to_json import dump_data_to_json
+from entrypoints.PostsFetcher import get_posts_fetcher
 
 
 async def posts_retriever(channels):
-	posts_fetcher = await get_posts_fetcher()
+    posts_fetcher = await get_posts_fetcher()  # object for retriving data from service.
+    data_saver = lambda channel: dump_data_to_json(
+        channel
+    )  # further processing of fetched data.
 
-	tasks = [posts_fetcher.get_last_post(channel) for channel in channels]
-	results = await asyncio.gather(*tasks)
-	for channel, result in zip(channels, results):
-		print(f"Result for {channel}: {result}")
+    tasks = [
+        posts_fetcher.get_last_n_posts(channel, 3, data_saver) for channel in channels
+    ]
+    results = await asyncio.gather(*tasks)
 
-	await posts_fetcher.cleanup()
+    ## No need to process results as it is already processed
+    # for channel, result in zip(channels, results):
+    #     print(f"Result for {channel}: {result}")
+
+    await posts_fetcher.cleanup()
+
+
+async def main():
+    # TODO: Create functionality that gets info about channels needed to be monitored.
+    # Temporary solution: List of channels from which the script will retrieve posts.
+    channels = ["ssternenko"]
+
+    # Create tasks for both coroutines
+    tasks = [posts_retriever(channels)]
+    await asyncio.gather(*tasks)
+
 
 if __name__ == "__main__":
-	# TODO: create global posts container, where posts_fetcher will store posts.
-	# TODO: create 'saver' thread, which takes posts from container and saves it further in db service
-	# TODO: create functionality, that getts info about channels need to be monitored.
-
-	# tmp solution: list of channels, from which script will retrieve posts.
-	channels = ["ssternenko"]
-	asyncio.run(posts_retriever(channels))
+    start_time = time.time()
+    asyncio.run(main())
+    end_time = time.time()
+    print(f"Program time={end_time-start_time} seconds")

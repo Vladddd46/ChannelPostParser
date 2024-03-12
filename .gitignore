@@ -2,3 +2,5 @@ creds.py
 *.session
 __pycache__
 *.json
+retrieved_data/*
+env/

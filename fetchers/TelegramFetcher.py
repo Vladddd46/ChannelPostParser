@@ -7,9 +7,9 @@ from datetime import datetime
 from typing import List
 
 from adaptors.TelethonAdaptors import (
-    convert_telethon_channel,
-    convert_telethon_comment,
-    convert_telethon_post,
+	convert_telethon_channel,
+	convert_telethon_comment,
+	convert_telethon_post,
 )
 from config import SESSION
 from entities.Post import Post
@@ -19,75 +19,79 @@ from tmp.creds import api_hash, api_id
 
 from fetchers.FetcherInterface import FetcherInterface
 
-
 class TelegramFetcher(FetcherInterface):
-    service_name = "telegram"  # override
+	service_name = "telegram"  # override
 
-    def __str__(self):
-        return f"Fetcher for service {self.service_name}: addr={id(self)}"
+	def __str__(self):
+		return f"Fetcher for service {self.service_name}: addr={id(self)}"
 
-    def __repr__(self):
-        return f"Fetcher for service {self.service_name}: addr={id(self)}"
+	def __repr__(self):
+		return f"Fetcher for service {self.service_name}: addr={id(self)}"
 
-    def __init__(self):
-        self.client = None
+	def __init__(self):
+		self.client = None
 
-    async def __retrieve_posts(self, channel_username: str, limit: int):
-        try:
-            telethon_channel = await self.client.get_entity(channel_username)
-            channel = convert_telethon_channel(telethon_channel)
+	async def __retrieve_posts(self, channel_username: str, limit: int):
+		try:
+			telethon_channel = await self.client.get_entity(channel_username)
+			channel = convert_telethon_channel(telethon_channel)
 
-            async for message in self.client.iter_messages(
-                telethon_channel, limit=limit
-            ):
-                post = convert_telethon_post(message)
+			async for message in self.client.iter_messages(
+				telethon_channel, limit=limit
+			):
+				post = convert_telethon_post(message)
 
-                async for comment in self.client.iter_messages(
-                    telethon_channel, reply_to=message.id
-                ):
-                    if hasattr(comment.from_id, "user_id"):
-                        from_user = User(comment.from_id.user_id)
-                    else:
-                        from_user = User(-1)
-                    tmp_comment = convert_telethon_comment(comment, from_user)
-                    post.add_comment(tmp_comment)
+				try:
+					async for comment in self.client.iter_messages(
+						telethon_channel, reply_to=message.id
+					):
+						if hasattr(comment.from_id, "user_id"):
+							from_user = User(comment.from_id.user_id)
+						else:
+							from_user = User(-1)
+						tmp_comment = convert_telethon_comment(comment, from_user)
+						post.add_comment(tmp_comment)
+				except:
+					pass
+				channel.add_post(post)
+			return channel
+		except Exception as e:
+			print("Exception:", e)  # TODO: add logger
 
-                # TODO: save retrieved post into container.
-        except Exception as e:
-            print("Exception:", e)  # TODO: add logger
+	# overrride
+	async def setup(self):
+		self.client = await TelegramClient(SESSION, api_id, api_hash).start()
 
-    # overrride
-    async def setup(self):
-        self.client = await TelegramClient(SESSION, api_id, api_hash).start()
+	# overrride
+	async def cleanup(self):
+		try:
+			await self.client.disconnect()
+		except Exception as e:
+			print(f"Error during Telethon client disconnect: {e}")  # TODO: add logger
+			exit(1)
 
-    # overrride
-    async def cleanup(self):
-        try:
-            await self.client.disconnect()
-        except Exception as e:
-            print(f"Error during Telethon client disconnect: {e}")  # TODO: add logger
-            exit(1)
+	# overrride
+	async def get_last_post(self, channel_username: str):
+		# TODO: add logger
+		data = await self.__retrieve_posts(channel_username=channel_username, limit=1)
+		return data
 
-    # overrride
-    async def get_last_post(self, channel_username: str):
-        print("get_last_post=", channel_username)
-        ret = await self.__retrieve_posts(channel_username=channel_username, limit=1)
-        return ret
+	# overrride
+	async def get_last_n_posts(self, channel_username: str, num: int):
+		# TODO: add logger
+		data = await self.__retrieve_posts(channel_username=channel_username, limit=num)
+		return data
 
-    # overrride
-    async def get_last_n_posts(self, channel_username: str, num: int):
-        print("get_last_n_posts=", channel_username)
+	# overrride
+	async def get_posts_by_date_range(
+		self, channel_username: str, from_date: datetime, to_date: datetime
+	):
+		print("get_posts_by_date_range=", channel_username)
 
-    # overrride
-    async def get_posts_by_date_range(
-        self, channel_username: str, from_date: datetime, to_date: datetime
-    ):
-        print("get_posts_by_date_range=", channel_username)
+	# overrride
+	async def get_posts_by_date(self, channel_username: str, date: datetime):
+		print("get_posts_by_date=", channel_username)
 
-    # overrride
-    async def get_posts_by_date(self, channel_username: str, date: datetime):
-        print("get_posts_by_date=", channel_username)
-
-    # overrride
-    async def get_post_by_id(self, channel_username: str, pid: int):
-        print("get_post_by_id=", channel_username)
+	# overrride
+	async def get_post_by_id(self, channel_username: str, pid: int):
+		print("get_post_by_id=", channel_username)

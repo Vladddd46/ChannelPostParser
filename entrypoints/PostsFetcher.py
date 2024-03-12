@@ -9,6 +9,8 @@ from config import SERVICE_NAME
 from entities.Post import Post
 from fetchers.FetcherInterface import FetcherInterface
 from fetchers.TelegramFetcher import TelegramFetcher
+from typing import Callable
+from entities.Channel import Channel 
 
 
 class PostsFetcher:
@@ -63,39 +65,43 @@ class PostsFetcher:
         self._is_cleanup = True
 
     @validate_setup
-    async def get_last_post(self, channel_username: str):  # TODO: return type -> Post
+    async def get_last_post(self, channel_username: str, data_saver: Callable[[Channel], None]) -> List[Channel]:
         res = await self._fetcher.get_last_post(channel_username)
         return res
 
     @validate_setup
     async def get_last_n_posts(
-        self, channel_username: str, num: int
-    ):  # TODO: return type -> List[Post]
-        res = await self._fetcher.get_last_n_posts(channel_username, num)
-        return res
+        self, channel_username: str, num: int, data_saver: Callable[[Channel], None]
+    ) -> List[Channel]:
+        data = await self._fetcher.get_last_n_posts(channel_username, num)
+        data_saver(data)
+        return data
 
     @validate_setup
     async def get_posts_by_date_range(
-        self, channel_username: str, from_date: datetime, to_date: datetime
-    ):  # TODO: return type -> List[Post]
-        res = await self._fetcher.get_posts_by_date_range(
+        self, channel_username: str, from_date: datetime, to_date: datetime, data_saver: Callable[[Channel], None]
+    ) -> List[Channel]:
+        data = await self._fetcher.get_posts_by_date_range(
             channel_username, from_date, to_date
         )
-        return res
+        data_saver(data)
+        return data
 
     @validate_setup
     async def get_posts_by_date(
-        self, channel_username: str, date: datetime
-    ):  # TODO: return type -> List[Post]
-        res = await self._fetcher.get_posts_by_date(channel_username, date)
-        return res
+        self, channel_username: str, date: datetime, data_saver: Callable[[Channel], None]
+    ) -> List[Channel]:
+        data = await self._fetcher.get_posts_by_date(channel_username, date)
+        data_saver(data)
+        return data
 
     @validate_setup
     async def get_post_by_id(
-        self, channel_username: str, pid: int
-    ):  # TODO: return type -> List[Post]
-        res = await self._fetcher.get_post_by_id(channel_username, pid)
-        return res
+        self, channel_username: str, pid: int, data_saver: Callable[[Channel], None]
+    ) -> List[Channel]:
+        data = await self._fetcher.get_post_by_id(channel_username, pid)
+        data_saver(data)
+        return data
 
 
 # Constructs PostsFetcher, which is responsible

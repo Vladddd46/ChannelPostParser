@@ -19,7 +19,7 @@ from tmp.creds import api_hash, api_id
 
 CHANNEL = "@ssternenko"
 SESSION = "./tmp/anon"
-POSTS_LIMIT = 10  # number of posts will be fetched from channel.
+POSTS_LIMIT = 100  # number of posts will be fetched from channel.
 
 progress_bar = tqdm(total=POSTS_LIMIT + 1, desc="Processing", unit="iteration")
 
@@ -68,5 +68,8 @@ async def main(api_id, api_hash):
 
 
 if __name__ == "__main__":
+    start_time = time.time()
     asyncio.run(main(api_id, api_hash))
     progress_bar.close()
+    end_time = time.time()
+    print(f"Program took time={end_time-start_time} (sec.)")

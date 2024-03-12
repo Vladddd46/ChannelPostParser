@@ -1,7 +1,8 @@
 # @ author: vladddd46
 # @ date:   09.03.2024
 # @ brief:  representation of channel.
-
+from entities.Post import Post
+from typing import List
 
 class Channel:
     def __init__(
@@ -12,6 +13,7 @@ class Channel:
         verified: bool,
         scam: bool,
         user_name: str,
+        posts: List[Post] = []
     ):
         self._num_of_subscribers = num_of_subscribers
         self._channel_id = channel_id
@@ -20,6 +22,10 @@ class Channel:
         self._verified = verified
         self._scam = scam
         self._user_name = user_name
+        self._posts = posts
+
+    def add_post(self, post: Post):
+        self._posts.append(post)
 
     @property
     def num_of_subscribers(self) -> int:
@@ -28,6 +34,14 @@ class Channel:
     @num_of_subscribers.setter
     def num_of_subscribers(self, value: int):
         self._num_of_subscribers = value
+
+    @property
+    def posts(self) -> List[Post]:
+        return self._posts
+
+    @posts.setter
+    def posts(self, value: List[Post]):
+        self._posts = value
 
     @property
     def channel_id(self) -> int:
@@ -79,13 +93,14 @@ class Channel:
 
     def to_json(self) -> dict:
         channel_json = {
-            "num_of_subscribers": self.num_of_subscribers,
-            "channel_id": self.channel_id,
+            "subscribers": self.num_of_subscribers,
+            "id": self.channel_id,
             "title": self.title,
-            # "photo": self.photo.to_json()  # TODO: Uncomment when the Photo class is defined
-            "verified": self.verified,
-            "scam": self.scam,
-            "user_name": self.user_name,
+            "posts": [pst.to_json() for pst in self.posts]
+            # "photo": self.photo.to_json()  # TODO: Uncomment when the Photo class is defined.
+            # "verified": self.verified, # not used in current impl
+            # "scam": self.scam, # not used in current impl
+            # "user_name": self.user_name, # not used in current impl
         }
         return channel_json
 
