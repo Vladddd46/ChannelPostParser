@@ -16,7 +16,7 @@ from entities.Post import Post
 from entities.User import User
 from telethon import TelegramClient, events
 from tmp.creds import api_hash, api_id
-
+from typing import Callable
 from fetchers.FetcherInterface import FetcherInterface
 
 
@@ -32,7 +32,7 @@ class TelegramFetcher(FetcherInterface):
     def __init__(self):
         self.client = None
 
-    async def __retrieve_posts(self, channel_username: str, limit: int):
+    async def __retrieve_posts(self, channel_username: str, limit: int, message_filter: Callable[[], bool]):
         try:
             telethon_channel = await self.client.get_entity(channel_username)
             channel = convert_telethon_channel(telethon_channel)
@@ -40,21 +40,21 @@ class TelegramFetcher(FetcherInterface):
             async for message in self.client.iter_messages(
                 telethon_channel, limit=limit
             ):
-                post = convert_telethon_post(message)
-
-                try:
-                    async for comment in self.client.iter_messages(
-                        telethon_channel, reply_to=message.id
-                    ):
-                        if hasattr(comment.from_id, "user_id"):
-                            from_user = User(comment.from_id.user_id)
-                        else:
-                            from_user = User(-1)
-                        tmp_comment = convert_telethon_comment(comment, from_user)
-                        post.add_comment(tmp_comment)
-                except:
-                    pass
-                channel.add_post(post)
+                if message_filter(message):
+                    post = convert_telethon_post(message)
+                    try:
+                        async for comment in self.client.iter_messages(
+                            telethon_channel, reply_to=message.id
+                        ):
+                            if hasattr(comment.from_id, "user_id"):
+                                from_user = User(comment.from_id.user_id)
+                            else:
+                                from_user = User(-1)
+                            tmp_comment = convert_telethon_comment(comment, from_user)
+                            post.add_comment(tmp_comment)
+                    except:
+                        pass
+                    channel.add_post(post)
             return channel
         except Exception as e:
             print("Exception:", e)  # TODO: add logger
@@ -74,13 +74,15 @@ class TelegramFetcher(FetcherInterface):
     # overrride
     async def get_last_post(self, channel_username: str):
         # TODO: add logger
-        data = await self.__retrieve_posts(channel_username=channel_username, limit=1)
+        mfilter = lambda message: True
+        data = await self.__retrieve_posts(channel_username=channel_username, limit=1, message_filter=mfilter)
         return data
 
     # overrride
     async def get_last_n_posts(self, channel_username: str, num: int):
         # TODO: add logger
-        data = await self.__retrieve_posts(channel_username=channel_username, limit=num)
+        mfilter = lambda message: True
+        data = await self.__retrieve_posts(channel_username=channel_username, limit=num, message_filter=mfilter)
         return data
 
     # overrride
@@ -95,4 +97,7 @@ class TelegramFetcher(FetcherInterface):
 
     # overrride
     async def get_post_by_id(self, channel_username: str, pid: int):
-        print("get_post_by_id=", channel_username)
+        # TODO: add logger
+        mfilter = lambda message: message.id == pid
+        data = await self.__retrieve_posts(channel_username=channel_username, message_filter=mfilter)
+        return data

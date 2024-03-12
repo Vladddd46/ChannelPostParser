@@ -21,7 +21,6 @@ CHANNEL = "@ssternenko"
 POSTS_LIMIT = 5  # number of posts will be fetched from channel.
 EXAMPLE_FILES_PATH = "./retrieved_data/example_data.json"
 
-progress_bar = tqdm(total=POSTS_LIMIT + 1, desc="Processing", unit="iteration")
 
 
 def datetime_serializer(obj):
@@ -30,6 +29,7 @@ def datetime_serializer(obj):
 
 
 async def main(api_id, api_hash):
+    progress_bar = tqdm(total=POSTS_LIMIT + 1, desc="Processing", unit="iteration")
     async with TelegramClient(SESSION, api_id, api_hash) as client:
         chat_name = CHANNEL
         chat = await client.get_entity(chat_name)
@@ -65,11 +65,11 @@ async def main(api_id, api_hash):
                 ensure_ascii=False,
             )
             progress_bar.update(1)
+    progress_bar.close()
 
 
 def mvp_dump_into_json():
     start_time = time.time()
     asyncio.run(main(api_id, api_hash))
-    progress_bar.close()
     end_time = time.time()
     print(f"Program took time={end_time-start_time} (sec.)")

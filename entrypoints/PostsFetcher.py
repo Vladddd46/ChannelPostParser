@@ -67,6 +67,7 @@ class PostsFetcher:
     @validate_setup
     async def get_last_post(self, channel_username: str, data_saver: Callable[[Channel], None]) -> List[Channel]:
         res = await self._fetcher.get_last_post(channel_username)
+        data_saver(data)
         return res
 
     @validate_setup
