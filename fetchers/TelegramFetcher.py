@@ -4,19 +4,17 @@
 #           Implements fetching posts from telegram
 import asyncio
 from datetime import datetime
-from typing import List
+from typing import Callable, List
 
-from adaptors.TelethonAdaptors import (
-    convert_telethon_channel,
-    convert_telethon_comment,
-    convert_telethon_post,
-)
+from adaptors.TelethonAdaptors import (convert_telethon_channel,
+                                       convert_telethon_comment,
+                                       convert_telethon_post)
 from config import SESSION
 from entities.Post import Post
 from entities.User import User
 from telethon import TelegramClient, events
 from tmp.creds import api_hash, api_id
-from typing import Callable
+
 from fetchers.FetcherInterface import FetcherInterface
 
 
@@ -32,7 +30,9 @@ class TelegramFetcher(FetcherInterface):
     def __init__(self):
         self.client = None
 
-    async def __retrieve_posts(self, channel_username: str, limit: int, message_filter: Callable[[], bool]):
+    async def __retrieve_posts(
+        self, channel_username: str, limit: int, message_filter: Callable[[], bool]
+    ):
         try:
             telethon_channel = await self.client.get_entity(channel_username)
             channel = convert_telethon_channel(telethon_channel)
@@ -75,14 +75,18 @@ class TelegramFetcher(FetcherInterface):
     async def get_last_post(self, channel_username: str):
         # TODO: add logger
         mfilter = lambda message: True
-        data = await self.__retrieve_posts(channel_username=channel_username, limit=1, message_filter=mfilter)
+        data = await self.__retrieve_posts(
+            channel_username=channel_username, limit=1, message_filter=mfilter
+        )
         return data
 
     # overrride
     async def get_last_n_posts(self, channel_username: str, num: int):
         # TODO: add logger
         mfilter = lambda message: True
-        data = await self.__retrieve_posts(channel_username=channel_username, limit=num, message_filter=mfilter)
+        data = await self.__retrieve_posts(
+            channel_username=channel_username, limit=num, message_filter=mfilter
+        )
         return data
 
     # overrride
@@ -99,5 +103,7 @@ class TelegramFetcher(FetcherInterface):
     async def get_post_by_id(self, channel_username: str, pid: int):
         # TODO: add logger
         mfilter = lambda message: message.id == pid
-        data = await self.__retrieve_posts(channel_username=channel_username, message_filter=mfilter)
+        data = await self.__retrieve_posts(
+            channel_username=channel_username, message_filter=mfilter
+        )
         return data
