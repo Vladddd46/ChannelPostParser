@@ -6,9 +6,14 @@ import asyncio
 from datetime import datetime
 from typing import List
 
-from adaptors.TelethonAdaptors import convert_telethon_post
+from adaptors.TelethonAdaptors import (
+    convert_telethon_channel,
+    convert_telethon_comment,
+    convert_telethon_post,
+)
 from config import SESSION
 from entities.Post import Post
+from entities.User import User
 from telethon import TelegramClient, events
 from tmp.creds import api_hash, api_id
 
@@ -28,8 +33,28 @@ class TelegramFetcher(FetcherInterface):
         self.client = None
 
     async def __retrieve_posts(self, channel_username: str, limit: int):
-        chat = await self.client.get_entity(channel_username)
-        # TODO: make implementation here
+        try:
+            telethon_channel = await self.client.get_entity(channel_username)
+            channel = convert_telethon_channel(telethon_channel)
+
+            async for message in self.client.iter_messages(
+                telethon_channel, limit=limit
+            ):
+                post = convert_telethon_post(message)
+
+                async for comment in self.client.iter_messages(
+                    telethon_channel, reply_to=message.id
+                ):
+                    if hasattr(comment.from_id, "user_id"):
+                        from_user = User(comment.from_id.user_id)
+                    else:
+                        from_user = User(-1)
+                    tmp_comment = convert_telethon_comment(comment, from_user)
+                    post.add_comment(tmp_comment)
+
+                # TODO: save retrieved post into container.
+        except Exception as e:
+            print("Exception:", e)  # TODO: add logger
 
     # overrride
     async def setup(self):
@@ -46,6 +71,8 @@ class TelegramFetcher(FetcherInterface):
     # overrride
     async def get_last_post(self, channel_username: str):
         print("get_last_post=", channel_username)
+        ret = await self.__retrieve_posts(channel_username=channel_username, limit=1)
+        return ret
 
     # overrride
     async def get_last_n_posts(self, channel_username: str, num: int):

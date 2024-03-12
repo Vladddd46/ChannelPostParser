@@ -45,7 +45,7 @@ class Post:
 
     @property
     def comments(self) -> List[Comment]:
-        return self._post_id
+        return self._comments
 
     @comments.setter
     def comments(self, value: List[Comment]):

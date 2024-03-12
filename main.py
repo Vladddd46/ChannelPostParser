@@ -20,5 +20,5 @@ if __name__ == "__main__":
 	# TODO: create functionality, that getts info about channels need to be monitored.
 
 	# tmp solution: list of channels, from which script will retrieve posts.
-	channels = ["ssternenko", "channel1", "channel2"]
+	channels = ["ssternenko"]
 	asyncio.run(posts_retriever(channels))
