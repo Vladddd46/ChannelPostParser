@@ -12,14 +12,14 @@ from tqdm import tqdm
 from adaptors.TelethonAdaptors import (convert_telethon_channel,
                                        convert_telethon_comment,
                                        convert_telethon_post)
-from config import EXAMPLE_FILES_PATH
 from entities.Post import Post
 from entities.User import User
 from tmp.creds import api_hash, api_id
+from config import SESSION
 
 CHANNEL = "@ssternenko"
-SESSION = "./tmp/anon"
-POSTS_LIMIT = 100  # number of posts will be fetched from channel.
+POSTS_LIMIT = 5  # number of posts will be fetched from channel.
+EXAMPLE_FILES_PATH = "./retrieved_data/example_data.json"
 
 progress_bar = tqdm(total=POSTS_LIMIT + 1, desc="Processing", unit="iteration")
 
@@ -67,7 +67,7 @@ async def main(api_id, api_hash):
             progress_bar.update(1)
 
 
-if __name__ == "__main__":
+def mvp_dump_into_json():
     start_time = time.time()
     asyncio.run(main(api_id, api_hash))
     progress_bar.close()

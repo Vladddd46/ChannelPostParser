@@ -7,11 +7,11 @@ import asyncio
 from telethon import TelegramClient, events
 
 from tmp.creds import api_hash, api_id
+from config import SESSION
 
 CHANNEL = "@ssternenko"
-SESSION = "./tmp/anon"
-POSTS_LIMIT = 10  # number of posts will be fetched from channel.
-
+POSTS_LIMIT = 1  # number of posts will be fetched from channel.
+posts = {}
 
 async def main(api_id, api_hash):
     async with TelegramClient(SESSION, api_id, api_hash) as client:
@@ -31,8 +31,7 @@ async def main(api_id, api_hash):
                     print("Excetion...")
 
 
-if __name__ == "__main__":
-    posts = {}
+def mvp_with_print():
     asyncio.run(main(api_id, api_hash))
 
     for msg_id in posts:
