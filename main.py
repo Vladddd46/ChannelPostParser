@@ -4,7 +4,7 @@ from datetime import datetime
 
 from data_processors.data_processors import get_data_processor
 from entrypoints.PostsFetcher import get_posts_fetcher
-
+from utils.Logger import logger
 
 async def posts_retriever(channels):
     posts_fetcher = await get_posts_fetcher()  # object for retriving data from service.
@@ -38,8 +38,9 @@ async def main():
 
 
 if __name__ == "__main__":
+    logger.info("=Program started=")
     start_time = time.time()
     asyncio.run(main())
     end_time = time.time()
-    print(f"Program time={end_time-start_time} seconds")
+    logger.info(f"Program time={end_time-start_time} seconds")
     print("===Complete===")

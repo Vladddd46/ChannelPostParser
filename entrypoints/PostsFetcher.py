@@ -11,6 +11,7 @@ from fetchers.FetcherInterface import FetcherInterface
 from fetchers.TelegramFetcher import TelegramFetcher
 from typing import Callable
 from entities.Channel import Channel
+from utils.Logger import logger
 
 
 class PostsFetcher:
@@ -21,9 +22,9 @@ class PostsFetcher:
 
     def __del__(self):
         if self._is_cleanup == False:
-            print(
-                "Error: fetcher was not cleaned up... You have to always cleanup fetcher after using it..."
-            )  # TODO: add loger
+            logger.error(
+                f"PostsFetcher was not cleaned up... You have to always cleanup fetcher after using it..."
+            )
             exit(1)
 
     def __str__(self):
@@ -35,9 +36,7 @@ class PostsFetcher:
     def validate_setup(func):
         def wrapper(self, *args, **kwargs):
             if not self._is_setup:
-                print(
-                    "Error: operation cannot be done, fetcher is not set up"
-                )  # TODO: add logger
+                logger.error(f"Operation cannot be done, PostaFetcher is not set up")
                 exit(1)
             return func(self, *args, **kwargs)
 
@@ -45,9 +44,7 @@ class PostsFetcher:
 
     async def setup(self):
         if self._is_setup == True:
-            print(
-                "Error: cannot setup: Posts fetcher is already setted up."
-            )  # TODO: add logger
+            logger.error(f"Cannot setup: Posts fetcher is already setted up.")
             exit(1)
 
         await self._fetcher.setup()
@@ -56,9 +53,7 @@ class PostsFetcher:
 
     async def cleanup(self):
         if self._is_setup == False:
-            print(
-                "Error: cannot cleanup: Posts fetcher is not setted up."
-            )  # TODO: add logger
+            logger.error(f"Cannot cleanup: Posts fetcher is not setted up.")
             exit(1)
         await self._fetcher.cleanup()
         self._is_setup = False
@@ -68,6 +63,9 @@ class PostsFetcher:
     async def get_last_post(
         self, channel_username: str, data_saver: Callable[[Channel], None]
     ) -> List[Channel]:
+        logger.info(
+            f"Request=get_last_post, params: channel_username={channel_username}"
+        )
         res = await self._fetcher.get_last_post(channel_username)
         data_saver(data)
         return res
@@ -76,6 +74,9 @@ class PostsFetcher:
     async def get_last_n_posts(
         self, channel_username: str, num: int, data_saver: Callable[[Channel], None]
     ) -> List[Channel]:
+        logger.info(
+            f"Request=get_last_n_posts, params: channel_username={channel_username}, num={num}"
+        )
         data = await self._fetcher.get_last_n_posts(channel_username, num)
         data_saver(data)
         return data
@@ -88,6 +89,9 @@ class PostsFetcher:
         to_date: datetime,
         data_saver: Callable[[Channel], None],
     ) -> List[Channel]:
+        logger.info(
+            f"Request=get_posts_by_date_range, params: channel_username={channel_username}, from_date={from_date}, to_date={to_date}"
+        )
         data = await self._fetcher.get_posts_by_date_range(
             channel_username, from_date, to_date
         )
@@ -101,6 +105,9 @@ class PostsFetcher:
         date: datetime,
         data_saver: Callable[[Channel], None],
     ) -> List[Channel]:
+        logger.info(
+            f"Request=get_posts_by_date, params: channel_username={channel_username}, date={date}"
+        )
         data = await self._fetcher.get_posts_by_date(channel_username, date)
         data_saver(data)
         return data
@@ -109,6 +116,7 @@ class PostsFetcher:
     async def get_post_by_id(
         self, channel_username: str, pid: int, data_saver: Callable[[Channel], None]
     ) -> List[Channel]:
+        logger.info(f"Request=get_post_by_id, params: pid={pid}")
         data = await self._fetcher.get_post_by_id(channel_username, pid)
         data_saver(data)
         return data
@@ -121,8 +129,9 @@ async def get_posts_fetcher() -> PostsFetcher:
     if SERVICE_NAME == "telegram":
         fetcher = TelegramFetcher()
     else:
-        print("Unknown service name")  # TODO: logger
+        logger.error(f"Not supported SERVICE_NAME={SERVICE_NAME} in config.py")
         exit(1)
+    logger.info(f"Selected service SERVICE_NAME={SERVICE_NAME}")
     pf = PostsFetcher(fetcher)
     await pf.setup()
     return pf

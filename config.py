@@ -4,8 +4,8 @@
 # For now only 'telegram' service is implemented.
 SERVICE_NAME = "telegram"
 
-# DATA_PROCESSOR = "json" # dump fetched data in json.
-DATA_PROCESSOR = "ftp" # sends fetched data to ftp.
+DATA_PROCESSOR = "json" # dump fetched data in json.
+# DATA_PROCESSOR = "ftp" # sends fetched data to ftp.
 
 
 # path to session file. [used for telegram fetcher]
@@ -20,3 +20,6 @@ INDENT_FOR_SAVED_JSON_DATA = 0
 
 # path to directory on ftp server, where fetched data will be saved.
 FTP_SAVE_DIR_PATH = "./upload"
+
+# path, where logs will be stored
+LOG_PATH = "./logs"
