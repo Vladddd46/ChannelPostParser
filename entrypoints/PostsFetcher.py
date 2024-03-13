@@ -10,7 +10,7 @@ from entities.Post import Post
 from fetchers.FetcherInterface import FetcherInterface
 from fetchers.TelegramFetcher import TelegramFetcher
 from typing import Callable
-from entities.Channel import Channel 
+from entities.Channel import Channel
 
 
 class PostsFetcher:
@@ -65,7 +65,9 @@ class PostsFetcher:
         self._is_cleanup = True
 
     @validate_setup
-    async def get_last_post(self, channel_username: str, data_saver: Callable[[Channel], None]) -> List[Channel]:
+    async def get_last_post(
+        self, channel_username: str, data_saver: Callable[[Channel], None]
+    ) -> List[Channel]:
         res = await self._fetcher.get_last_post(channel_username)
         data_saver(data)
         return res
@@ -80,7 +82,11 @@ class PostsFetcher:
 
     @validate_setup
     async def get_posts_by_date_range(
-        self, channel_username: str, from_date: datetime, to_date: datetime, data_saver: Callable[[Channel], None]
+        self,
+        channel_username: str,
+        from_date: datetime,
+        to_date: datetime,
+        data_saver: Callable[[Channel], None],
     ) -> List[Channel]:
         data = await self._fetcher.get_posts_by_date_range(
             channel_username, from_date, to_date
@@ -90,7 +96,10 @@ class PostsFetcher:
 
     @validate_setup
     async def get_posts_by_date(
-        self, channel_username: str, date: datetime, data_saver: Callable[[Channel], None]
+        self,
+        channel_username: str,
+        date: datetime,
+        data_saver: Callable[[Channel], None],
     ) -> List[Channel]:
         data = await self._fetcher.get_posts_by_date(channel_username, date)
         data_saver(data)

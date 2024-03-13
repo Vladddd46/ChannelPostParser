@@ -4,6 +4,7 @@
 from entities.Post import Post
 from typing import List
 
+
 class Channel:
     def __init__(
         self,
@@ -13,7 +14,7 @@ class Channel:
         verified: bool,
         scam: bool,
         user_name: str,
-        posts: List[Post] = []
+        posts: List[Post] = [],
     ):
         self._num_of_subscribers = num_of_subscribers
         self._channel_id = channel_id

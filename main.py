@@ -2,18 +2,20 @@ import asyncio
 import time
 from datetime import datetime
 
-from data_processors.dump_data_to_json import dump_data_to_json
+from data_processors.data_processors import get_data_processor
 from entrypoints.PostsFetcher import get_posts_fetcher
 
 
 async def posts_retriever(channels):
     posts_fetcher = await get_posts_fetcher()  # object for retriving data from service.
-    data_saver = lambda channel: dump_data_to_json(
+    data_processor = get_data_processor()
+
+    data_saver = lambda channel: data_processor(
         channel
     )  # further processing of fetched data.
 
     tasks = [
-        posts_fetcher.get_last_n_posts(channel, 5, data_saver) for channel in channels
+        posts_fetcher.get_last_n_posts(channel, 1, data_saver) for channel in channels
     ]
     print("Data is fetching... It may take some time.")
     results = await asyncio.gather(*tasks)
