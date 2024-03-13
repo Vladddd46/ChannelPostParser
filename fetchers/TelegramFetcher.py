@@ -6,9 +6,11 @@ import asyncio
 from datetime import datetime
 from typing import Callable, List
 
-from adaptors.TelethonAdaptors import (convert_telethon_channel,
-                                       convert_telethon_comment,
-                                       convert_telethon_post)
+from adaptors.TelethonAdaptors import (
+    convert_telethon_channel,
+    convert_telethon_comment,
+    convert_telethon_post,
+)
 from config import SESSION
 from entities.Post import Post
 from entities.User import User
@@ -16,6 +18,7 @@ from telethon import TelegramClient, events
 from tmp.creds import api_hash, api_id
 
 from fetchers.FetcherInterface import FetcherInterface
+from utils.Logger import logger
 
 
 class TelegramFetcher(FetcherInterface):
@@ -52,12 +55,16 @@ class TelegramFetcher(FetcherInterface):
                                 from_user = User(-1)
                             tmp_comment = convert_telethon_comment(comment, from_user)
                             post.add_comment(tmp_comment)
-                    except:
-                        pass
+                    except Exception as e:
+                        logger.warning(
+                            f"Exception in comments section of message.id={message.id}: {e}"
+                        )
                     channel.add_post(post)
             return channel
         except Exception as e:
-            print("Exception:", e)  # TODO: add logger
+            logger.warning(
+                f"Exception while retrieving posts from chat={channel.channel_id}: {e}"
+            )
 
     # overrride
     async def setup(self):
@@ -68,12 +75,11 @@ class TelegramFetcher(FetcherInterface):
         try:
             await self.client.disconnect()
         except Exception as e:
-            print(f"Error during Telethon client disconnect: {e}")  # TODO: add logger
+            logger.error(f"Error during Telethon client disconnect: {e}")
             exit(1)
 
     # overrride
     async def get_last_post(self, channel_username: str):
-        # TODO: add logger
         mfilter = lambda message: True
         data = await self.__retrieve_posts(
             channel_username=channel_username, limit=1, message_filter=mfilter
@@ -82,7 +88,6 @@ class TelegramFetcher(FetcherInterface):
 
     # overrride
     async def get_last_n_posts(self, channel_username: str, num: int):
-        # TODO: add logger
         mfilter = lambda message: True
         data = await self.__retrieve_posts(
             channel_username=channel_username, limit=num, message_filter=mfilter
@@ -93,15 +98,14 @@ class TelegramFetcher(FetcherInterface):
     async def get_posts_by_date_range(
         self, channel_username: str, from_date: datetime, to_date: datetime
     ):
-        print("get_posts_by_date_range=", channel_username)
+        print("get_posts_by_date_range=", channel_username)  # TODO: add implementation
 
     # overrride
     async def get_posts_by_date(self, channel_username: str, date: datetime):
-        print("get_posts_by_date=", channel_username)
+        print("get_posts_by_date=", channel_username)  # TODO: add implementation
 
     # overrride
     async def get_post_by_id(self, channel_username: str, pid: int):
-        # TODO: add logger
         mfilter = lambda message: message.id == pid
         data = await self.__retrieve_posts(
             channel_username=channel_username, message_filter=mfilter

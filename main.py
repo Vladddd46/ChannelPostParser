@@ -15,7 +15,7 @@ async def posts_retriever(channels):
     )  # further processing of fetched data.
 
     tasks = [
-        posts_fetcher.get_last_n_posts(channel, 1, data_saver) for channel in channels
+        posts_fetcher.get_last_n_posts(channel, 20, data_saver) for channel in channels
     ]
     print("Data is fetching... It may take some time.")
     results = await asyncio.gather(*tasks)

@@ -2,6 +2,7 @@ import logging
 from config import LOG_PATH
 from datetime import datetime
 
+
 class Logger:
     def __init__(self):
         current_datetime = datetime.now().strftime("%Y-%m-%d_%H-%M-%S-%f")
@@ -22,5 +23,6 @@ class Logger:
 
     def error(self, msg):
         self.logger.error(msg)
+
 
 logger = Logger()
