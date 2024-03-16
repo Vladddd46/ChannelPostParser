@@ -5,6 +5,9 @@
 #           Each service fetcher (telegram fetcher) should inherit this interface.
 from abc import ABC, abstractmethod
 from datetime import datetime
+from typing import Callable
+
+from entities.Channel import Channel
 
 
 class FetcherInterface:
@@ -19,23 +22,38 @@ class FetcherInterface:
         pass
 
     @abstractmethod
-    async def get_last_post(self, channel_username: str):
-        pass
-
-    @abstractmethod
-    async def get_last_n_posts(self, channel_username: str, num: int):
-        pass
-
-    @abstractmethod
-    async def get_posts_by_date_range(
-        self, channel_username: str, from_date: datetime, to_date: datetime
+    async def get_last_post(
+        self, channel_username: str, data_saver: Callable[[Channel], None]
     ):
         pass
 
     @abstractmethod
-    async def get_posts_by_date(self, channel_username: str, date: datetime):
+    async def get_last_n_posts(
+        self, channel_username: str, num: int, data_saver: Callable[[Channel], None]
+    ):
         pass
 
     @abstractmethod
-    async def get_post_by_id(self, channel_username: str, pid: int):
+    async def get_posts_by_date_range(
+        self,
+        channel_username: str,
+        from_date: datetime,
+        to_date: datetime,
+        data_saver: Callable[[Channel], None],
+    ):
+        pass
+
+    @abstractmethod
+    async def get_posts_by_date(
+        self,
+        channel_username: str,
+        date: datetime,
+        data_saver: Callable[[Channel], None],
+    ):
+        pass
+
+    @abstractmethod
+    async def get_post_by_id(
+        self, channel_username: str, pid: int, data_saver: Callable[[Channel], None]
+    ):
         pass
