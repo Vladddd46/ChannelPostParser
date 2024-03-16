@@ -98,12 +98,12 @@ class TelegramFetcher(FetcherInterface):
         message_filter: Callable[[], bool],
         data_saver: Callable[[Channel], None],
     ):
+
         channel = {}
         number_of_retrieved_messages = 0
         try:
             telethon_channel = await self.client.get_entity(channel_username)
             channel = convert_telethon_channel(telethon_channel)
-
             async for message in self.client.iter_messages(
                 telethon_channel, limit=limit
             ):
@@ -125,11 +125,11 @@ class TelegramFetcher(FetcherInterface):
                         logger.warning(
                             f"Exception in comments section of message.id={message.id}: {e}"
                         )
-                    channel.add_post(post)
 
+                    channel.add_post(post)
                     # save data and reload variables.
                     if number_of_retrieved_messages > NUMBER_OF_MESSAGES_TO_SAVE:
-                        data_saver(channel)
+                        await data_saver(channel)
                         number_of_retrieved_messages = 0
                         channel.posts = []
             return channel

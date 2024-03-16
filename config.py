@@ -28,4 +28,7 @@ TIMEZONE = "Europe/Kiev"
 
 
 # defines max value of retrieved messages, that should be saved.
-NUMBER_OF_MESSAGES_TO_SAVE = 500
+NUMBER_OF_MESSAGES_TO_SAVE = 50
+
+USE_PREDEFINED_POSTSFETCHER_CONFIGURATOR = True
+

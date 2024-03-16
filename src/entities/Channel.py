@@ -106,7 +106,7 @@ class Channel:
         return channel_json
 
     def __str__(self):
-        return f"Channel : {self._channel_id} | {self._title} | subscribers={self._num_of_subscribers}"
+        return f"Channel : {self._channel_id} | {self._title} | subscribers={self._num_of_subscribers} | addr={id(self)}"
 
     def __repr__(self):
-        return f"Channel : {self._channel_id} | {self._title} | subscribers={self._num_of_subscribers}"
+        return f"Channel : {self._channel_id} | {self._title} | subscribers={self._num_of_subscribers} | addr={id(self)}"
