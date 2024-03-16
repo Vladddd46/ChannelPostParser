@@ -66,8 +66,7 @@ class PostsFetcher:
         logger.info(
             f"Request=get_last_post, params: channel_username={channel_username}"
         )
-        res = await self._fetcher.get_last_post(channel_username)
-        data_saver(data)
+        res = await self._fetcher.get_last_post(channel_username, data_saver)
         return res
 
     @validate_setup
@@ -77,8 +76,7 @@ class PostsFetcher:
         logger.info(
             f"Request=get_last_n_posts, params: channel_username={channel_username}, num={num}"
         )
-        data = await self._fetcher.get_last_n_posts(channel_username, num)
-        data_saver(data)
+        data = await self._fetcher.get_last_n_posts(channel_username, num, data_saver)
         return data
 
     @validate_setup
@@ -93,9 +91,8 @@ class PostsFetcher:
             f"Request=get_posts_by_date_range, params: channel_username={channel_username}, from_date={from_date}, to_date={to_date}"
         )
         data = await self._fetcher.get_posts_by_date_range(
-            channel_username, from_date, to_date
+            channel_username, from_date, to_date, data_saver
         )
-        data_saver(data)
         return data
 
     @validate_setup
@@ -108,8 +105,7 @@ class PostsFetcher:
         logger.info(
             f"Request=get_posts_by_date, params: channel_username={channel_username}, date={date}"
         )
-        data = await self._fetcher.get_posts_by_date(channel_username, date)
-        data_saver(data)
+        data = await self._fetcher.get_posts_by_date(channel_username, date, data_saver)
         return data
 
     @validate_setup
@@ -117,8 +113,7 @@ class PostsFetcher:
         self, channel_username: str, pid: int, data_saver: Callable[[Channel], None]
     ) -> List[Channel]:
         logger.info(f"Request=get_post_by_id, params: pid={pid}")
-        data = await self._fetcher.get_post_by_id(channel_username, pid)
-        data_saver(data)
+        data = await self._fetcher.get_post_by_id(channel_username, pid, data_saver)
         return data
 
 

@@ -1,3 +1,8 @@
+# @ author: vladddd46
+# @ date:   16.03.2024
+# @ brief:  Ftp server connection entrypoint.
+#           Is used for doing manipulations in ftp server.
+
 import json
 from datetime import datetime
 from typing import Union

@@ -2,11 +2,15 @@
 # @ date:   09.03.2024
 # @ brief:  adaptors, that convert telethon objects into entities.
 
+import pytz
+from config import TIMEZONE
 from entities.Channel import Channel
 from entities.Comment import Comment
 from entities.Post import Post
 from entities.Reaction import Reaction
 from entities.User import User
+
+_timezone = pytz.timezone(TIMEZONE)
 
 
 def convert_telethon_channel(channel) -> Channel:
@@ -34,10 +38,11 @@ def convert_telethon_comment(comment, from_user: User) -> Comment:
         for reaction in comment.reactions.results:
             reactions.append(convert_telethon_reaction(reaction))
     contains_media = True if comment.media else False
+    timezone_adobted_date = comment.date.astimezone(_timezone)
     tmp_comment = Comment(
         comment.id,
         comment.text,
-        comment.date,
+        timezone_adobted_date,
         from_user,
         reactions,
         views,
@@ -54,9 +59,10 @@ def convert_telethon_post(post) -> Post:
         for reaction in post.reactions.results:
             tmp_reactions.append(convert_telethon_reaction(reaction))
     tmp_views = post.views if post.views else -1
+    timezone_adobted_date = post.date.astimezone(_timezone)
     tmp_post = Post(
         post_id=post.id,
-        datetime=post.date,
+        datetime=timezone_adobted_date,
         text=post.message,
         pinned=post.pinned,
         views=tmp_views,

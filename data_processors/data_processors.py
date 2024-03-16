@@ -37,11 +37,14 @@ def _dump_data_to_json(channel: Channel):
             ensure_ascii=False,
         )
 
-
+# Define global variable _serv in order it initialize only once.
+# Connecting to ftp is time-consumine action, so we do not want
+# to do it many time.
+_serv = None
+if DATA_PROCESSOR == "ftp":
+    _serv = FtpServer(FTP_HOSTNAME, FTP_PORT, FTP_USERNAME, FTP_PASSWORD)
 def _dump_data_to_ftp(channel: Channel):
-    # TODO: this should be global variable in order not to connect to ftp each time.
-    serv = FtpServer(FTP_HOSTNAME, FTP_PORT, FTP_USERNAME, FTP_PASSWORD)
-    serv.save_json(
+    _serv.save_json(
         data=channel.to_json(), path=FTP_SAVE_DIR_PATH, data_id=channel.channel_id
     )
 

@@ -5,3 +5,4 @@ __pycache__
 retrieved_data/*
 env/
 *.log
+anon.session-journal

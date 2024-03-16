@@ -23,3 +23,9 @@ FTP_SAVE_DIR_PATH = "./upload"
 
 # path, where logs will be stored
 LOG_PATH = "./logs"
+
+TIMEZONE = "Europe/Kiev"
+
+
+# defines max value of retrieved messages, that should be saved.
+NUMBER_OF_MESSAGES_TO_SAVE = 2000

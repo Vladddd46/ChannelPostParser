@@ -3,6 +3,10 @@
 # @ brief:  Interface to Fetcher class.
 #           It is responsible for fetching data from services.
 #           Each service fetcher (telegram fetcher) should inherit this interface.
+#           data_saver - function, that do further processing of fetched data.
+#                        the purpose of passing it to Fetchers: if there are a lot of
+#                        fetched data, it is more efficent to process it further (save)
+#                        instead of having it in memory.
 from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import Callable

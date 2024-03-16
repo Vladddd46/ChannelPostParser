@@ -6,6 +6,7 @@ from data_processors.data_processors import get_data_processor
 from entrypoints.PostsFetcher import get_posts_fetcher
 from utils.Logger import logger
 
+
 async def posts_retriever(channels):
     posts_fetcher = await get_posts_fetcher()  # object for retriving data from service.
     data_processor = get_data_processor()
@@ -14,9 +15,24 @@ async def posts_retriever(channels):
         channel
     )  # further processing of fetched data.
 
+    ########### TODO
+    # date = datetime(2024, 3, 16)
+    # tasks = [
+    #     posts_fetcher.get_posts_by_date(channel, date, data_saver) for channel in channels
+    # ]
+
+    start_data = datetime(2024, 3, 14)
+    end_data = datetime(2024, 3, 15)
     tasks = [
-        posts_fetcher.get_last_n_posts(channel, 20, data_saver) for channel in channels
+        posts_fetcher.get_posts_by_date_range(channel, start_data, end_data, data_saver)
+        for channel in channels
     ]
+
+    # tasks = [
+    #     posts_fetcher.get_last_n_posts(channel, 20, data_saver) for channel in channels
+    # ]
+    ########################
+
     print("Data is fetching... It may take some time.")
     results = await asyncio.gather(*tasks)
 
