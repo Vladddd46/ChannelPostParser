@@ -4,11 +4,11 @@
 
 import pytz
 from config import TIMEZONE
-from entities.Channel import Channel
-from entities.Comment import Comment
-from entities.Post import Post
-from entities.Reaction import Reaction
-from entities.User import User
+from src.entities.Channel import Channel
+from src.entities.Comment import Comment
+from src.entities.Post import Post
+from src.entities.Reaction import Reaction
+from src.entities.User import User
 
 _timezone = pytz.timezone(TIMEZONE)
 

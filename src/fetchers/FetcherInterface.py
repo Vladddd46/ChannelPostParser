@@ -11,7 +11,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import Callable
 
-from entities.Channel import Channel
+from src.entities.Channel import Channel
 
 
 class FetcherInterface:

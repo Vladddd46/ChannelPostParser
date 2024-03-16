@@ -4,8 +4,8 @@
 from datetime import datetime
 from typing import List
 
-from entities.Comment import Comment
-from entities.Reaction import Reaction
+from src.entities.Comment import Comment
+from src.entities.Reaction import Reaction
 
 
 class Post:

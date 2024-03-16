@@ -9,11 +9,11 @@ from datetime import datetime
 from telethon import TelegramClient, events
 from tqdm import tqdm
 
-from adaptors.TelethonAdaptors import (convert_telethon_channel,
+from src.adaptors.TelethonAdaptors import (convert_telethon_channel,
                                        convert_telethon_comment,
                                        convert_telethon_post)
-from entities.Post import Post
-from entities.User import User
+from src.entities.Post import Post
+from src.entities.User import User
 from tmp.creds import api_hash, api_id
 from config import SESSION
 

@@ -4,8 +4,8 @@
 from datetime import datetime
 from typing import List
 
-from entities.Reaction import Reaction
-from entities.User import User
+from src.entities.Reaction import Reaction
+from src.entities.User import User
 
 
 class Comment:

@@ -14,10 +14,10 @@ from config import (
     INDENT_FOR_SAVED_JSON_DATA,
     RETRIVED_DATA_STORAGE_PATH,
 )
-from entities.Channel import Channel
-from entrypoints.FtpServer import FtpServer
+from src.entities.Channel import Channel
+from src.entrypoints.FtpServer import FtpServer
 from tmp.creds import FTP_HOSTNAME, FTP_PASSWORD, FTP_PORT, FTP_USERNAME
-from utils.Logger import logger
+from src.utils.Logger import logger
 
 
 def _dump_data_to_json(channel: Channel):
@@ -37,12 +37,15 @@ def _dump_data_to_json(channel: Channel):
             ensure_ascii=False,
         )
 
+
 # Define global variable _serv in order it initialize only once.
 # Connecting to ftp is time-consumine action, so we do not want
 # to do it many time.
 _serv = None
 if DATA_PROCESSOR == "ftp":
     _serv = FtpServer(FTP_HOSTNAME, FTP_PORT, FTP_USERNAME, FTP_PASSWORD)
+
+
 def _dump_data_to_ftp(channel: Channel):
     _serv.save_json(
         data=channel.to_json(), path=FTP_SAVE_DIR_PATH, data_id=channel.channel_id

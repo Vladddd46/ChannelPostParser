@@ -28,4 +28,4 @@ TIMEZONE = "Europe/Kiev"
 
 
 # defines max value of retrieved messages, that should be saved.
-NUMBER_OF_MESSAGES_TO_SAVE = 2000
+NUMBER_OF_MESSAGES_TO_SAVE = 500

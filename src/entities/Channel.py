@@ -1,7 +1,7 @@
 # @ author: vladddd46
 # @ date:   09.03.2024
 # @ brief:  representation of channel.
-from entities.Post import Post
+from src.entities.Post import Post
 from typing import List
 
 

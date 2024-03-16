@@ -7,18 +7,20 @@ from datetime import datetime, timedelta, timezone
 from typing import Callable, List
 
 import pytz
-from adaptors.TelethonAdaptors import (convert_telethon_channel,
-                                       convert_telethon_comment,
-                                       convert_telethon_post)
+from src.adaptors.TelethonAdaptors import (
+    convert_telethon_channel,
+    convert_telethon_comment,
+    convert_telethon_post,
+)
 from config import NUMBER_OF_MESSAGES_TO_SAVE, SESSION, TIMEZONE
-from entities.Channel import Channel
-from entities.Post import Post
-from entities.User import User
+from src.entities.Channel import Channel
+from src.entities.Post import Post
+from src.entities.User import User
 from telethon import TelegramClient, events
 from tmp.creds import api_hash, api_id
-from utils.Logger import logger
+from src.utils.Logger import logger
 
-from fetchers.FetcherInterface import FetcherInterface
+from src.fetchers.FetcherInterface import FetcherInterface
 
 
 class TelegramFetcher(FetcherInterface):

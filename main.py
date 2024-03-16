@@ -2,9 +2,9 @@ import asyncio
 import time
 from datetime import datetime
 
-from data_processors.data_processors import get_data_processor
-from entrypoints.PostsFetcher import get_posts_fetcher
-from utils.Logger import logger
+from src.data_processors.data_processors import get_data_processor
+from src.entrypoints.PostsFetcher import get_posts_fetcher
+from src.utils.Logger import logger
 
 
 async def posts_retriever(channels):

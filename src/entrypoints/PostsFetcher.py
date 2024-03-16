@@ -6,12 +6,12 @@ from datetime import datetime
 from typing import List
 
 from config import SERVICE_NAME
-from entities.Post import Post
-from fetchers.FetcherInterface import FetcherInterface
-from fetchers.TelegramFetcher import TelegramFetcher
+from src.entities.Post import Post
+from src.fetchers.FetcherInterface import FetcherInterface
+from src.fetchers.TelegramFetcher import TelegramFetcher
 from typing import Callable
-from entities.Channel import Channel
-from utils.Logger import logger
+from src.entities.Channel import Channel
+from src.utils.Logger import logger
 
 
 class PostsFetcher:
