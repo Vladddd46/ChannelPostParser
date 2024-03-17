@@ -19,7 +19,7 @@ class Post:
         reactions: List[Reaction],
         is_reply: bool,
         contains_media: bool,
-        comments: List[Comment] = [],
+        comments: List[Comment] = None,
     ):
         self._post_id = post_id
         self._datetime = datetime
@@ -30,7 +30,7 @@ class Post:
         self._reactions = reactions
         self._is_reply = is_reply
         self._contains_media = contains_media
-        self._comments = comments
+        self._comments = comments if comments != None else []
 
     def add_comment(self, comment: Comment):
         self._comments.append(comment)

@@ -14,7 +14,7 @@ class Channel:
         verified: bool,
         scam: bool,
         user_name: str,
-        posts: List[Post] = [],
+        posts: List[Post] = None,
     ):
         self._num_of_subscribers = num_of_subscribers
         self._channel_id = channel_id
@@ -23,7 +23,7 @@ class Channel:
         self._verified = verified
         self._scam = scam
         self._user_name = user_name
-        self._posts = posts
+        self._posts = posts if posts != None else []
 
     def add_post(self, post: Post):
         self._posts.append(post)
