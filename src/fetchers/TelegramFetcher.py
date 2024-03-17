@@ -7,20 +7,19 @@ from datetime import datetime, timedelta, timezone
 from typing import Callable, List
 
 import pytz
+from config import NUMBER_OF_MESSAGES_TO_SAVE, SESSION, TIMEZONE
 from src.adaptors.TelethonAdaptors import (
     convert_telethon_channel,
     convert_telethon_comment,
     convert_telethon_post,
 )
-from config import NUMBER_OF_MESSAGES_TO_SAVE, SESSION, TIMEZONE
 from src.entities.Channel import Channel
 from src.entities.Post import Post
 from src.entities.User import User
+from src.fetchers.FetcherInterface import FetcherInterface
+from src.utils.Logger import logger
 from telethon import TelegramClient, events
 from tmp.creds import api_hash, api_id
-from src.utils.Logger import logger
-
-from src.fetchers.FetcherInterface import FetcherInterface
 
 
 class TelegramFetcher(FetcherInterface):
@@ -35,6 +34,13 @@ class TelegramFetcher(FetcherInterface):
     def __init__(self):
         self.client = None
 
+    # @ brief: main logic of retrieves posts from telegram channel.
+    # @ params:
+    #           channel_username - TODO: should be renamed (because it may take channel_username or channel_id)
+    #           limit - max. number of posts will be retrieved
+    #           message_filter - labmda filter, that filters posts.
+    #           offset_date - date from which starts posts retrieval (from newer posts to older)
+    #
     async def __retrieve_posts(
         self,
         channel_username: str,
@@ -49,6 +55,10 @@ class TelegramFetcher(FetcherInterface):
             f"Requested to retrieve posts from \n\tchannel={channel_username}\n\tlimit={limit}"
         )
 
+        # empty channel
+        # TODO: this is not the best solution. Think what should return this func in case of exception or any error.
+        #       should it return anything at all? because datasaver do further data processing.
+        channel = Channel(-1)
         try:
             telethon_channel = await self.client.get_entity(channel_username)
             channel = convert_telethon_channel(telethon_channel)
@@ -78,15 +88,16 @@ class TelegramFetcher(FetcherInterface):
                         )
 
                     channel.add_post(post)
-                    # save data and reload variables.
+
+                    # periodically dump/save data and reload variables.
+                    # this approach is used in order not to load memory with
+                    # big amount of data.
                     if number_of_retrieved_messages > NUMBER_OF_MESSAGES_TO_SAVE:
-                        await data_saver(channel)
+                        data_saver(channel)
                         number_of_retrieved_messages = 0
                         channel.posts = []
-
             if len(channel.posts) != 0:
-                await data_saver(channel)
-            return channel
+                data_saver(channel)
         except Exception as e:
             logger.error(
                 f"Exception while retrieving posts from chat={channel.channel_id}: {e}"

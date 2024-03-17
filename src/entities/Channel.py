@@ -8,12 +8,12 @@ from typing import List
 class Channel:
     def __init__(
         self,
-        channel_id: int,
-        title: str,
-        num_of_subscribers: int,
-        verified: bool,
-        scam: bool,
-        user_name: str,
+        channel_id: int = -1,
+        title: str = "",
+        num_of_subscribers: int = -1,
+        verified: bool = False,
+        scam: bool = False,
+        user_name: str = "",
         posts: List[Post] = None,
     ):
         self._num_of_subscribers = num_of_subscribers
