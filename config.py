@@ -1,34 +1,54 @@
+# Overall project configuration file.
 
-# variable, that defines, 
-# which fetcher will be used for getting posts. 
-# For now only 'telegram' service is implemented.
+"""
+| SERVICE NAME |
+defines, which service(fetcher) will be used
+for retrieving data.
+"""
 SERVICE_NAME = "telegram"
+# SERVICE_NAME = "twitter" # NOT IMPLEMENTED YET
+# SERVICE_NAME = "whatsup" # NOT IMPLEMENTED YET
+# SERVICE_NAME = "viber"   # NOT IMPLEMENTED YET
 
-DATA_PROCESSOR = "json" # dump fetched data in json.
+"""
+| DATA PROCESSOR |
+defines, which function will be user for processing data
+after retrieval from service.
+"""
+DATA_PROCESSOR = "json"  # saves fetched data in json.
 # DATA_PROCESSOR = "ftp" # sends fetched data to ftp.
 
 
-# path to session file. [used for telegram fetcher]
+"""
+| SESSION |
+path to session file. (is used in telegram fetcher)
+"""
 SESSION = "./tmp/anon"
 
+"""
+|*_PATH |
+pathes to important locations.
+RETRIVED_DATA_STORAGE_PATH - where retrieved data will be saved(in case DATA_PROCESSOR == "json")
+FTP_SAVE_DIR_PATH - where retrieved data will be saved(in case DATA_PROCESSOR == "ftp")
+LOG_PATH - where logs will be saved.
+"""
 RETRIVED_DATA_STORAGE_PATH = "./tmp/retrieved_data/"
-
-# Indentation level for files.json, where fetched data will be saved
-# Use the min value of indent=0 in order to save memory space.
-# More symbols in file=More memory needed.
-INDENT_FOR_SAVED_JSON_DATA = 0
-
-# path to directory on ftp server, where fetched data will be saved.
+LOG_PATH = "./tmp/logs/"
 FTP_SAVE_DIR_PATH = "./upload"
 
-# path, where logs will be stored
-LOG_PATH = "./tmp/logs/"
 
+"""
+| OTHER CONFIG |
+INDENT_FOR_SAVED_JSON_DATA - indentation level for *.json files, where fetched data will be saved.
+							 The smaller indent level will be used, the less memory will files take.
+							 min.value=0
+TIMEZONE - timezone, which is used in saved posts.
+NUMBER_OF_MESSAGES_TO_SAVE - max.number of retrieved messages per channel, which may store in memory
+							 before being dump in local dir or ftp server by DATA_PROCESSOR
+USE_PREDEFINED_POSTSFETCHER_CONFIGURATOR - should programm use predefined configuration for posts fetcher or
+										   use external service to get this data.
+"""
+INDENT_FOR_SAVED_JSON_DATA = 0
 TIMEZONE = "Europe/Kiev"
-
-
-# defines max value of retrieved messages, that should be saved.
-NUMBER_OF_MESSAGES_TO_SAVE = 50
-
+NUMBER_OF_MESSAGES_TO_SAVE = 1000
 USE_PREDEFINED_POSTSFETCHER_CONFIGURATOR = True
-

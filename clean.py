@@ -17,6 +17,13 @@ def remove_files(pattern):
     except Exception as e:
         print(f"An error occurred while deleting files: {e}")
 
+def remove_directory(path):
+    try:
+        os.rmdir(path)
+        print(f"Directory: {path} deleted.")
+    except:
+        print(f"No directories with such {path} found")
+
 
 LOGS = f"{LOG_PATH}/*.log"
 RETRIEVED_DATA = f"{RETRIVED_DATA_STORAGE_PATH}/*.json"

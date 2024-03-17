@@ -6,7 +6,7 @@
 # 			It can get info from external service as well as predefined data.
 # 			The way ExternalConfigurator gets info depends on configuration in config.py
 from config import USE_PREDEFINED_POSTSFETCHER_CONFIGURATOR
-from src.entrypoints.PredefinedConfigurationData import predefined_config
+from config_posts_fetcher import predefined_config
 from src.utils.Logger import logger
 
 
