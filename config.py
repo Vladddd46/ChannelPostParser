@@ -11,7 +11,7 @@ DATA_PROCESSOR = "json" # dump fetched data in json.
 # path to session file. [used for telegram fetcher]
 SESSION = "./tmp/anon"
 
-RETRIVED_DATA_STORAGE_PATH = "./retrieved_data/"
+RETRIVED_DATA_STORAGE_PATH = "./tmp/retrieved_data/"
 
 # Indentation level for files.json, where fetched data will be saved
 # Use the min value of indent=0 in order to save memory space.
@@ -22,7 +22,7 @@ INDENT_FOR_SAVED_JSON_DATA = 0
 FTP_SAVE_DIR_PATH = "./upload"
 
 # path, where logs will be stored
-LOG_PATH = "./logs"
+LOG_PATH = "./tmp/logs/"
 
 TIMEZONE = "Europe/Kiev"
 
