@@ -69,7 +69,7 @@ class TelegramFetcher(FetcherInterface):
             async for message in self.client.iter_messages(
                 telethon_channel, limit=limit
             ):
-                if message_filter(message):
+                if message_filter(message) and (hasattr(message, "message") and message.message != ""):
                     post = convert_telethon_post(message)
                     number_of_retrieved_messages += 1
                     try:
@@ -87,6 +87,7 @@ class TelegramFetcher(FetcherInterface):
                             post.add_comment(tmp_comment)
                             number_of_retrieved_messages += 1
                     except Exception as e:
+                        # this may happen when comment was deleted.
                         logger.warning(
                             f"Exception in comments section of message.id={message.id}: {e}"
                         )

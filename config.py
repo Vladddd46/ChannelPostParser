@@ -48,7 +48,7 @@ NUMBER_OF_MESSAGES_TO_SAVE - max.number of retrieved messages per channel, which
 USE_PREDEFINED_POSTSFETCHER_CONFIGURATOR - should programm use predefined configuration for posts fetcher or
 										   use external service to get this data.
 """
-INDENT_FOR_SAVED_JSON_DATA = 0
+INDENT_FOR_SAVED_JSON_DATA = 4
 TIMEZONE = "Europe/Kiev"
 NUMBER_OF_MESSAGES_TO_SAVE = 1000
 USE_PREDEFINED_POSTSFETCHER_CONFIGURATOR = True
