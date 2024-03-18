@@ -21,7 +21,7 @@ _chanels = ["ssternenko", "russvolcorps", "ded_shinibi"]
 predefined_config = {
     "channels": _chanels,
     "function": "get_last_n_posts",
-    "params": {"num": 200},
+    "params": {"num": 10},
 }
 
 # TODO: should be debugged and fixed

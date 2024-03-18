@@ -12,7 +12,7 @@ from config import (
     DATA_PROCESSOR,
     FTP_SAVE_DIR_PATH,
     INDENT_FOR_SAVED_JSON_DATA,
-    RETRIVED_DATA_STORAGE_PATH
+    RETRIVED_DATA_STORAGE_PATH,
 )
 from src.entities.Channel import Channel
 from src.entrypoints.FtpServer import FtpServer

@@ -12,6 +12,7 @@ from src.adaptors.TelethonAdaptors import (
     convert_telethon_channel,
     convert_telethon_comment,
     convert_telethon_post,
+    convert_telethon_user,
 )
 from src.entities.Channel import Channel
 from src.entities.Post import Post
@@ -76,9 +77,12 @@ class TelegramFetcher(FetcherInterface):
                             telethon_channel, reply_to=message.id
                         ):
                             if hasattr(comment.from_id, "user_id"):
-                                from_user = User(comment.from_id.user_id)
+                                user_entity = await self.client.get_entity(
+                                    comment.from_id
+                                )
+                                from_user = convert_telethon_user(user_entity)
                             else:
-                                from_user = User(-1)
+                                from_user = User(-1, "UNKNOWN_USER")
                             tmp_comment = convert_telethon_comment(comment, from_user)
                             post.add_comment(tmp_comment)
                             number_of_retrieved_messages += 1

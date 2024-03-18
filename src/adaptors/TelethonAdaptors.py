@@ -73,8 +73,20 @@ def convert_telethon_post(post) -> Post:
     return tmp_post
 
 
-def convert_telethon_user(user):
-    pass
+def convert_telethon_user(telethon_user) -> User:
+    username = telethon_user.username if telethon_user.username != None else ""
+    first_name = telethon_user.first_name if telethon_user.first_name != None else ""
+    last_name = telethon_user.last_name if telethon_user.last_name != None else ""
+    ret = User(
+        uid=telethon_user.id,
+        username=username,
+        first_name=first_name,
+        last_name=last_name,
+        is_premium=telethon_user.premium,
+        is_verified=telethon_user.verified,
+        is_scam=telethon_user.scam,
+    )
+    return ret
 
 
 def convert_telethon_reaction(reaction) -> Reaction:
