@@ -29,7 +29,7 @@
     <li>fetchers - classes responsible for fetching data from services.</li>
     <li>utils - helper functions.</li>
   </ul>
-  <li>tmp - contains files like *.session, creats.py, logs, retrieved data.</li>
+  <li>tmp - contains files like *.session, creads.py, logs, retrieved data.</li>
   <ul>
     <li>logs - logs are stored here.</li>
     <li>retrieved_data - fetched posts will be stored here. (in case config.py has proper configuration)</li>
