@@ -1,0 +1,32 @@
+Program is designed so, that you can easily change the way fetched data is
+being process (should it be saved locally in json or loaded to ftp server or
+other ways)
+Moreover you can choose which data_processor to user from in config.py 
+(DATA_PROCESSOR).
+
+In this file is explained how to change the way of how data will be processed 
+after being fetched:
+
+1. Go to src/data_processors/data_processors.py.
+
+2. Define function for processing data. Use the following interface: 
+	def my_custom_data_processing(channel: Channel)
+
+3. Implement my_custom_data_processing.
+	def my_custom_data_processing(channel: Channel):
+		...send_data_to_some_other_server(channel)
+
+4. In data_processors.py find function get_data_processor.
+
+5. Add if clause for my_custom_data_processing in get_data_processor:
+	if DATA_PROCESSOR == "best_data_processor":
+		return my_custom_data_processing
+
+6. Go in config.py and add
+	DATA_PROCESSOR = "best_data_processor"
+
+7. Now after data fetched from service my_custom_data_processing will be 
+	called. The responsibility of calling my_custom_data_processing is on
+	src/fetchers/*Fetcher.py classes. Fetchers define, when 
+	my_custom_data_processing should be called. In my_custom_data_processing
+	we just get Channel and it`s posts.
