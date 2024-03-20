@@ -1,0 +1,37 @@
+Program is designed so, that you can easily expand it with new services for 
+fetching posts like Twitter, Whats up etc.
+Moreover you can choose which service to fetch posts from in config.py 
+(SERVICE_NAME).
+
+In this file is explained how to extend program with new services for fetching.
+Let`s suppose we want to add Twitter to our service:
+
+1. Go in src/fetchers and create file for new service: TwitterFetcher.py
+
+2. In file TwitterFetcher.py do import:
+	from src.fetchers.FetcherInterface import FetcherInterface
+
+3. Create in TwitterFetcher.py class TwitterFetcher(FetcherInterface), 
+	which inherits from FetcherInterface
+
+4. Implement all inherited from FetcherInterface methods in TwitterFetcher.py:
+	get_last_post,
+	get_last_n_posts,
+	get_posts_by_date_range, get_posts_by_date,
+	get_post_by_id
+
+5. Also in TwitterFetcher class add static variable:
+	service_name = "twitter"
+   in order this fetcher could be turned on/off from config.py
+
+6. Go to src/entrypoints/PostsFetcher.py and find function get_posts_fetcher()
+
+7. In get_posts_fetcher add:
+    elif SERVICE_NAME == "twitter": # should be the same as service_name
+        fetcher = TwitterFetcher()
+    * also do not forget to import TwitterFetcher from TwitterFetcher.py
+
+8. Go in config.py and add:
+	SERVICE_NAME = "twitter"
+
+9. Now our program will fetch data from twitter.
