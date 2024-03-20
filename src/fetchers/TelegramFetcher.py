@@ -3,17 +3,17 @@
 # @ brief:  Telegram fetcher class.
 #           Implements fetching posts from telegram
 import asyncio
+import sys
 from datetime import datetime, timedelta, timezone
 from typing import Callable, List
-import sys
+
 import pytz
-from config import NUMBER_OF_MESSAGES_TO_SAVE, SESSION, TIMEZONE, COMMENTS_ENABLED
-from src.adaptors.TelethonAdaptors import (
-    convert_telethon_channel,
-    convert_telethon_comment,
-    convert_telethon_post,
-    convert_telethon_user,
-)
+from config import (COMMENTS_ENABLED, NUMBER_OF_MESSAGES_TO_SAVE, SESSION,
+                    TIMEZONE)
+from src.adaptors.TelethonAdaptors import (convert_telethon_channel,
+                                           convert_telethon_comment,
+                                           convert_telethon_post,
+                                           convert_telethon_user)
 from src.entities.Channel import Channel
 from src.entities.Post import Post
 from src.entities.User import User
@@ -23,6 +23,7 @@ from telethon import TelegramClient, events
 from tmp.creds import api_hash, api_id
 
 _timezone = pytz.timezone(TIMEZONE)
+
 
 class TelegramFetcher(FetcherInterface):
     service_name = "telegram"  # override
@@ -49,9 +50,9 @@ class TelegramFetcher(FetcherInterface):
         limit: int,
         message_filter: Callable[[], bool],
         data_saver: Callable[[Channel], None],
-        offset_date: datetime = datetime.now(pytz.utc).date(),
+        offset_date: datetime = datetime.now(pytz.utc).date() + timedelta(days=1),
+        from_date: datetime = None,
     ):
-        offset_date = offset_date + timedelta(days=1)
         number_of_retrieved_messages = 0
         logger.info(
             f"Requested to retrieve posts from \n\tchannel={channel_username}\n\tlimit={limit}"
@@ -67,16 +68,18 @@ class TelegramFetcher(FetcherInterface):
             logger.info(
                 f"Retrieved channel={channel_username} entity: id={channel.channel_id}, subscribers={channel.num_of_subscribers}"
             )
-            async for message in self.client.iter_messages(telethon_channel):
-                # if we already read needed number of messages
-                if limit <= 0:
+            async for message in self.client.iter_messages(
+                telethon_channel, offset_date=offset_date
+            ):
+                # if we already read needed number of messages or date is not appropriate
+                if limit <= 0 or (from_date != None and from_date > message.date):
                     break
-                if message_filter(message) and (
+                if message_filter(message) == True and (
                     hasattr(message, "message") and message.message != ""
                 ):
                     post = convert_telethon_post(message)
                     number_of_retrieved_messages += 1
-                    limit -= 1 # decreases number of posts should be retrieved.
+                    limit -= 1  # decreases number of posts should be retrieved.
                     if COMMENTS_ENABLED == True:
                         try:
                             async for comment in self.client.iter_messages(
@@ -92,7 +95,9 @@ class TelegramFetcher(FetcherInterface):
                                         from_user = convert_telethon_user(user_entity)
                                 except:
                                     from_user = User(-1, "UNKNOWN_USER")
-                                tmp_comment = convert_telethon_comment(comment, from_user)
+                                tmp_comment = convert_telethon_comment(
+                                    comment, from_user
+                                )
                                 post.add_comment(tmp_comment)
                                 number_of_retrieved_messages += 1
                         except Exception as e:
@@ -164,8 +169,12 @@ class TelegramFetcher(FetcherInterface):
         to_date: datetime,
         data_saver: Callable[[Channel], None],
     ):
-        from_date_with_timezone = _timezone.localize(datetime.combine(from_date, datetime.min.time()))
-        to_date_with_timezone = _timezone.localize(datetime.combine(to_date, datetime.min.time()))
+        from_date_with_timezone = _timezone.localize(
+            datetime.combine(from_date, datetime.min.time())
+        )
+        to_date_with_timezone = _timezone.localize(
+            datetime.combine(to_date, datetime.max.time())
+        )
         mfilter = lambda message: not message.date < from_date_with_timezone
         max_int = sys.maxsize
         data = await self.__retrieve_posts(
@@ -174,6 +183,7 @@ class TelegramFetcher(FetcherInterface):
             limit=max_int,
             data_saver=data_saver,
             offset_date=to_date_with_timezone,
+            from_date=from_date_with_timezone,
         )
         return data
 
@@ -197,9 +207,11 @@ class TelegramFetcher(FetcherInterface):
         self, channel_username: str, pid: int, data_saver: Callable[[Channel], None]
     ):
         mfilter = lambda message: message.id == pid
+        max_int = sys.maxsize
         data = await self.__retrieve_posts(
             channel_username=channel_username,
             message_filter=mfilter,
+            limit=max_int,
             data_saver=data_saver,
         )
         return data

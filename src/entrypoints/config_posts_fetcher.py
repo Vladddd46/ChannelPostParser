@@ -11,27 +11,28 @@ _current_date = datetime.now().date()
 _two_days_ago = _current_date - timedelta(days=2)
 
 # _channels = ["ssternenko", "russvolcorps", "ded_shinibi"]
+
 _channels = [
-    "ssternenko", 
-    "ukrpravda_news", 
-    "Crimeanwind", 
-    "DeepStateUA", 
-    "TCH_channel", 
-    "uniannet", 
+    "ssternenko",
+    "ukrpravda_news",
+    "Crimeanwind",
+    "DeepStateUA",
+    "TCH_channel",
+    "uniannet",
     "serhiyprytula",
-    "fighter_bomber", 
-    "romanov_92", 
-    "SeaPower", 
-    "strelkovii", 
-    "millettvcrimea", 
-    "ZA_FROHT", 
-    "tass_agency", 
-    "rian_ru", 
-    "mod_russia", 
-    "rsotmdivision", 
+    "fighter_bomber",
+    "romanov_92",
+    "SeaPower",
+    "strelkovii",
+    "millettvcrimea",
+    "ZA_FROHT",
+    "tass_agency",
+    "rian_ru",
+    "mod_russia",
+    "rsotmdivision",
     "rybar",
-    "BILD_Russian", 
-    "rferl"
+    "BILD_Russian",
+    "rferl",
 ]
 
 # predefined_config = {
@@ -43,17 +44,15 @@ _channels = [
 predefined_config = {
     "channels": _channels,
     "function": "get_last_n_posts",
-    "params": {"num": 100},
+    "params": {"num": 5},
 }
 
-# TODO: should be debugged and fixed
 # predefined_config = {
 #     "channels": _channels,
 #     "function": "get_posts_by_date_range",
-#     "params": {"from_date": _current_date, "to_date": _two_days_ago},
+#     "params": {"from_date": _two_days_ago, "to_date": _current_date},
 # }
 
-# TODO: should be debugged and fixed
 # predefined_config = {
 #     "channels": _channels,
 #     "function": "get_posts_by_date",
