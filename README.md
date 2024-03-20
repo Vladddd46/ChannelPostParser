@@ -36,3 +36,11 @@
     <li>creds.py - credentials for the project.</li>
   </ul>
 </ul>
+
+<h3>TODO list</h3>
+<ul>
+<li>1. add typing in params adaptors/TelethonAdaptors.py.</li>
+<li>2. add more reaction types in _determineReactionTypeFromEmoticon entities/Reaction.py.</li>
+<li>3. add support of media files.</li>
+<li>4. add tests.</li>
+</ul>

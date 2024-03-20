@@ -5,9 +5,9 @@
 import asyncio
 from datetime import datetime, timedelta, timezone
 from typing import Callable, List
-
+import sys
 import pytz
-from config import NUMBER_OF_MESSAGES_TO_SAVE, SESSION, TIMEZONE
+from config import NUMBER_OF_MESSAGES_TO_SAVE, SESSION, TIMEZONE, COMMENTS_ENABLED
 from src.adaptors.TelethonAdaptors import (
     convert_telethon_channel,
     convert_telethon_comment,
@@ -22,6 +22,7 @@ from src.utils.Logger import logger
 from telethon import TelegramClient, events
 from tmp.creds import api_hash, api_id
 
+_timezone = pytz.timezone(TIMEZONE)
 
 class TelegramFetcher(FetcherInterface):
     service_name = "telegram"  # override
@@ -75,30 +76,31 @@ class TelegramFetcher(FetcherInterface):
                 ):
                     post = convert_telethon_post(message)
                     number_of_retrieved_messages += 1
-                    limit -= 1
-                    try:
-                        async for comment in self.client.iter_messages(
-                            telethon_channel, reply_to=message.id
-                        ):
-                            from_user = User(-1, "UNKNOWN_USER")
-                            try:
-                                if hasattr(comment.from_id, "user_id"):
-                                    # Sometimes exceptions appear, when we try to get user.
-                                    user_entity = await self.client.get_entity(
-                                        comment.from_id
-                                    )
-                                    from_user = convert_telethon_user(user_entity)
-                            except:
+                    limit -= 1 # decreases number of posts should be retrieved.
+                    if COMMENTS_ENABLED == True:
+                        try:
+                            async for comment in self.client.iter_messages(
+                                telethon_channel, reply_to=message.id
+                            ):
                                 from_user = User(-1, "UNKNOWN_USER")
-                            tmp_comment = convert_telethon_comment(comment, from_user)
-                            post.add_comment(tmp_comment)
-                            number_of_retrieved_messages += 1
-                    except Exception as e:
-                        # this may happen when comment was deleted.
-                        logger.warning(
-                            f"Exception in comments section of message.id={message.id}: {e}",
-                            only_debug_mode=True,
-                        )
+                                try:
+                                    if hasattr(comment.from_id, "user_id"):
+                                        # Sometimes exceptions appear, when we try to get user.
+                                        user_entity = await self.client.get_entity(
+                                            comment.from_id
+                                        )
+                                        from_user = convert_telethon_user(user_entity)
+                                except:
+                                    from_user = User(-1, "UNKNOWN_USER")
+                                tmp_comment = convert_telethon_comment(comment, from_user)
+                                post.add_comment(tmp_comment)
+                                number_of_retrieved_messages += 1
+                        except Exception as e:
+                            # this may happen when comment was deleted.
+                            logger.warning(
+                                f"Exception in comments section of message.id={message.id}: {e}",
+                                only_debug_mode=True,
+                            )
                     channel.add_post(post)
 
                     # periodically dump/save data and reload variables.
@@ -162,12 +164,14 @@ class TelegramFetcher(FetcherInterface):
         to_date: datetime,
         data_saver: Callable[[Channel], None],
     ):
-        from_date_with_timezone = from_date.replace(tzinfo=timezone.utc)
-        to_date_with_timezone = to_date.replace(tzinfo=timezone.utc)
+        from_date_with_timezone = _timezone.localize(datetime.combine(from_date, datetime.min.time()))
+        to_date_with_timezone = _timezone.localize(datetime.combine(to_date, datetime.min.time()))
         mfilter = lambda message: not message.date < from_date_with_timezone
+        max_int = sys.maxsize
         data = await self.__retrieve_posts(
             channel_username=channel_username,
             message_filter=mfilter,
+            limit=max_int,
             data_saver=data_saver,
             offset_date=to_date_with_timezone,
         )
