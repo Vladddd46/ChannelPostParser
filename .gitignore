@@ -6,3 +6,4 @@ env/
 *.log
 anon.session-journal
 creds.py
+.pytest_cache
