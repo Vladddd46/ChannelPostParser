@@ -66,14 +66,16 @@ class TelegramFetcher(FetcherInterface):
             logger.info(
                 f"Retrieved channel={channel_username} entity: id={channel.channel_id}, subscribers={channel.num_of_subscribers}"
             )
-            async for message in self.client.iter_messages(
-                telethon_channel, limit=limit
-            ):
+            async for message in self.client.iter_messages(telethon_channel):
+                # if we already read needed number of messages
+                if limit <= 0:
+                    break
                 if message_filter(message) and (
                     hasattr(message, "message") and message.message != ""
                 ):
                     post = convert_telethon_post(message)
                     number_of_retrieved_messages += 1
+                    limit -= 1
                     try:
                         async for comment in self.client.iter_messages(
                             telethon_channel, reply_to=message.id
@@ -97,7 +99,6 @@ class TelegramFetcher(FetcherInterface):
                             f"Exception in comments section of message.id={message.id}: {e}",
                             only_debug_mode=True,
                         )
-
                     channel.add_post(post)
 
                     # periodically dump/save data and reload variables.

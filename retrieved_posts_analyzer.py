@@ -18,6 +18,7 @@ def read_json_files_in_folder(folder_path):
 
     # Read content from each JSON file
     retrieved_posts = 0
+    res = {}
     step = 0
     for json_file in json_files:
         step += 1
@@ -26,10 +27,18 @@ def read_json_files_in_folder(folder_path):
         with open(file_path, "r", encoding="utf-8") as f:
             try:
                 data = json.load(f)
+                if data["title"] not in res:
+                    res[data["title"]] = 0
                 retrieved_posts += len(data["posts"])
+                res[data["title"]] += len(data["posts"])
             except json.JSONDecodeError as e:
                 print(f"Error reading {json_file}: {e}")
-    print(f"Number of retrieved posts={retrieved_posts}")
+    print("====================")
+    print(f"Overall number of retrieved posts={retrieved_posts}")
+    print(f"Number of channels={len(res.keys())}")
+    print("\n")
+    for channel in res:
+        print(f"{channel}={res[channel]}")
 
 
 if __name__ == "__main__":
