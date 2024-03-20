@@ -1,5 +1,5 @@
 import logging
-from config import LOG_PATH
+from config import LOG_PATH, DEBUG_MODE
 from datetime import datetime
 
 
@@ -15,13 +15,19 @@ class Logger:
         )
         self.logger = logging.getLogger()
 
-    def info(self, msg):
+    def info(self, msg, only_debug_mode=False):
+        if only_debug_mode == True and DEBUG_MODE != True:
+            return
         self.logger.info(msg)
 
-    def warning(self, msg):
+    def warning(self, msg, only_debug_mode=False):
+        if only_debug_mode == True and DEBUG_MODE != True:
+            return
         self.logger.warning(msg)
 
-    def error(self, msg):
+    def error(self, msg, only_debug_mode=False):
+        if only_debug_mode == True and DEBUG_MODE != True:
+            return
         self.logger.error(msg)
 
 

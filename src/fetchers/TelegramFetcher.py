@@ -76,12 +76,15 @@ class TelegramFetcher(FetcherInterface):
                         async for comment in self.client.iter_messages(
                             telethon_channel, reply_to=message.id
                         ):
-                            if hasattr(comment.from_id, "user_id"):
-                                user_entity = await self.client.get_entity(
-                                    comment.from_id
-                                )
-                                from_user = convert_telethon_user(user_entity)
-                            else:
+                            from_user = User(-1, "UNKNOWN_USER")
+                            try:
+                                if hasattr(comment.from_id, "user_id"):
+                                    # Sometimes exceptions appear, when we try to get user.
+                                    user_entity = await self.client.get_entity(
+                                        comment.from_id
+                                    )
+                                    from_user = convert_telethon_user(user_entity)
+                            except:
                                 from_user = User(-1, "UNKNOWN_USER")
                             tmp_comment = convert_telethon_comment(comment, from_user)
                             post.add_comment(tmp_comment)
@@ -89,7 +92,7 @@ class TelegramFetcher(FetcherInterface):
                     except Exception as e:
                         # this may happen when comment was deleted.
                         logger.warning(
-                            f"Exception in comments section of message.id={message.id}: {e}"
+                            f"Exception in comments section of message.id={message.id}: {e}", only_debug_mode=True
                         )
 
                     channel.add_post(post)

@@ -47,8 +47,10 @@ NUMBER_OF_MESSAGES_TO_SAVE - max.number of retrieved messages per channel, which
 							 before being dump in local dir or ftp server by DATA_PROCESSOR
 USE_PREDEFINED_POSTSFETCHER_CONFIGURATOR - should programm use predefined configuration for posts fetcher or
 										   use external service to get this data.
+DEBUG_MODE - defines if we run programm in debug mode or production. Debug logs will also be added to logfile.
 """
 INDENT_FOR_SAVED_JSON_DATA = 4
 TIMEZONE = "Europe/Kiev"
 NUMBER_OF_MESSAGES_TO_SAVE = 1000
 USE_PREDEFINED_POSTSFETCHER_CONFIGURATOR = True
+DEBUG_MODE = False
