@@ -15,8 +15,8 @@ SERVICE_NAME = "telegram"
 defines, which function will be user for processing data
 after retrieval from service.
 """
-DATA_PROCESSOR = "json"  # saves fetched data in json.
-# DATA_PROCESSOR = "ftp" # sends fetched data to ftp.
+# DATA_PROCESSOR = "json"  # saves fetched data in json.
+DATA_PROCESSOR = "ftp" # sends fetched data to ftp.
 
 
 """
@@ -50,9 +50,9 @@ USE_PREDEFINED_POSTSFETCHER_CONFIGURATOR - should programm use predefined config
 DEBUG_MODE - defines if we run programm in debug mode or production. Debug logs will also be added to logfile.
 COMMENTS_ENABLED - defines if posts should contain comments or programm could omit them.
 """
-INDENT_FOR_SAVED_JSON_DATA = 4
+INDENT_FOR_SAVED_JSON_DATA = 0
 TIMEZONE = "Europe/Kiev"
-NUMBER_OF_MESSAGES_TO_SAVE = 1000
+NUMBER_OF_MESSAGES_TO_SAVE = 10000
 USE_PREDEFINED_POSTSFETCHER_CONFIGURATOR = True
 DEBUG_MODE = False
-COMMENTS_ENABLED = False
+COMMENTS_ENABLED = True

@@ -7,8 +7,11 @@
 
 from datetime import datetime, timedelta
 
+year = 365
+two_years = year * 2
+
 _current_date = datetime.now().date()
-_two_days_ago = _current_date - timedelta(days=2)
+_two_days_ago = _current_date - timedelta(days=two_years)
 
 # _channels = ["ssternenko", "russvolcorps", "ded_shinibi"]
 
@@ -41,17 +44,17 @@ _channels = [
 #     "params": {},
 # }
 
-predefined_config = {
-    "channels": _channels,
-    "function": "get_last_n_posts",
-    "params": {"num": 5},
-}
-
 # predefined_config = {
 #     "channels": _channels,
-#     "function": "get_posts_by_date_range",
-#     "params": {"from_date": _two_days_ago, "to_date": _current_date},
+#     "function": "get_last_n_posts",
+#     "params": {"num": 5},
 # }
+
+predefined_config = {
+    "channels": _channels,
+    "function": "get_posts_by_date_range",
+    "params": {"from_date": _two_days_ago, "to_date": _current_date},
+}
 
 # predefined_config = {
 #     "channels": _channels,

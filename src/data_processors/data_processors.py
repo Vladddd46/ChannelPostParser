@@ -28,9 +28,10 @@ def _dump_data_to_json(channel: Channel):
     datetime_serializer = (
         lambda obj: obj.isoformat() if isinstance(obj, datetime) else None
     )
+    new_format = [channel.to_json()]
     with open(path, "w", encoding="utf-8") as file:
         json.dump(
-            channel.to_json(),
+            new_format,
             file,
             indent=INDENT_FOR_SAVED_JSON_DATA,
             default=datetime_serializer,
