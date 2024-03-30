@@ -102,9 +102,11 @@ async def posts_retriever():
 
 
 if __name__ == "__main__":
-    logger.info("=Program started=")
-    start_time = time.time()
-    asyncio.run(posts_retriever())
-    end_time = time.time()
-    logger.info(f"Program time={end_time-start_time} seconds")
-    print("===Complete===")
+    while True:
+        logger.info("=Program started=")
+        start_time = time.time()
+        asyncio.run(posts_retriever())
+        end_time = time.time()
+        logger.info(f"Program time={end_time-start_time} seconds")
+        print("===Complete===")
+        time.sleep(3600)
