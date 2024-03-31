@@ -10,7 +10,7 @@ from tmp.creds import api_hash, api_id
 from config import SESSION
 
 CHANNEL = "@ssternenko"
-POSTS_LIMIT = 1  # number of posts will be fetched from channel.
+POSTS_LIMIT = 10  # number of posts will be fetched from channel.
 posts = {}
 
 async def main(api_id, api_hash):

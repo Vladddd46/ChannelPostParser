@@ -19,7 +19,7 @@ from config import SESSION
 
 CHANNEL = "@ssternenko"
 POSTS_LIMIT = 5  # number of posts will be fetched from channel.
-EXAMPLE_FILES_PATH = "./retrieved_data/example_data.json"
+EXAMPLE_FILES_PATH = "./tmp/retrieved_data/example_data.json"
 
 
 
