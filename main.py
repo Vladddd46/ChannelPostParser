@@ -21,6 +21,7 @@ def determine_tasks_to_run(
         if k not in cnfg.keys():
             logger.error(f"No '{k}' key in cnfg.keys()")
             return []
+
     if len(cnfg["channels"]) == 0:
         logger.warning(f"No channel to monitor: list is empty")
         return []
@@ -42,10 +43,15 @@ def determine_tasks_to_run(
         if "from_date" in cnfg["params"] and "to_date" in cnfg["params"]:
             from_date = cnfg["params"]["from_date"]
             to_date = cnfg["params"]["to_date"]
-            tasks = [
-                fetcher.get_posts_by_date_range(channel, from_date, to_date, data_saver)
-                for channel in channels
-            ]
+            if from_date > to_date:
+                logger.error(f"from_date > to_date: can not get posts by date range")
+            else:
+                tasks = [
+                    fetcher.get_posts_by_date_range(
+                        channel, from_date, to_date, data_saver
+                    )
+                    for channel in channels
+                ]
         else:
             logger.error(f"No 'from_date'/'to_date' key in cnfg['params']")
     elif cnfg["function"] == "get_posts_by_date":
@@ -117,7 +123,9 @@ if __name__ == "__main__":
             # If we use queue, we gonna do fetching each time,
             #  there is message in queue
             if USE_PREDEFINED_POSTSFETCHER_CONFIGURATOR == True:
-                logger.info(f"Program going to sleep for time={SLEEP_TIME_AFTER_FETCHING} seconds")
+                logger.info(
+                    f"Program going to sleep for time={SLEEP_TIME_AFTER_FETCHING} seconds"
+                )
                 time.sleep(SLEEP_TIME_AFTER_FETCHING)
         except:
             pass
