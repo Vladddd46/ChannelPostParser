@@ -7,6 +7,7 @@ from src.entrypoints.PostsFetcher import get_posts_fetcher, PostsFetcher
 from src.utils.Logger import logger
 from src.entrypoints.PostsFetcherConfigurator import PostsFetcherConfigurator
 from src.entities.Channel import Channel
+from config import USE_PREDEFINED_POSTSFETCHER_CONFIGURATOR, SLEEP_TIME_AFTER_FETCHING
 
 
 # Determines, which tasks should be run based on config
@@ -110,6 +111,13 @@ if __name__ == "__main__":
             end_time = time.time()
             logger.info(f"Program time={end_time-start_time} seconds")
             print("===Complete===")
-            time.sleep(3600)
+
+            # If we use predefined configuration instead of reading from queue,
+            #  then we need to define sleep time between each fetching.
+            # If we use queue, we gonna do fetching each time,
+            #  there is message in queue
+            if USE_PREDEFINED_POSTSFETCHER_CONFIGURATOR == True:
+                logger.info(f"Program going to sleep for time={SLEEP_TIME_AFTER_FETCHING} seconds")
+                time.sleep(SLEEP_TIME_AFTER_FETCHING)
         except:
             pass

@@ -47,12 +47,16 @@ NUMBER_OF_MESSAGES_TO_SAVE - max.number of retrieved messages per channel, which
 							 before being dump in local dir or ftp server by DATA_PROCESSOR
 USE_PREDEFINED_POSTSFETCHER_CONFIGURATOR - should programm use predefined configuration for posts fetcher or
 										   use external service to get this data.
+SLEEP_TIME_AFTER_FETCHING - [actual only if USE_PREDEFINED_POSTSFETCHER_CONFIGURATOR=True] - defines sleep time
+							between fetching. If USE_PREDEFINED_POSTSFETCHER_CONFIGURATOR=False, then it is not
+							needed because we do fetching when there is a request message in queue.
 DEBUG_MODE - defines if we run programm in debug mode or production. Debug logs will also be added to logfile.
 COMMENTS_ENABLED - defines if posts should contain comments or programm could omit them.
 """
 INDENT_FOR_SAVED_JSON_DATA = 0
 TIMEZONE = "Europe/Kiev"
-NUMBER_OF_MESSAGES_TO_SAVE = 10000
+NUMBER_OF_MESSAGES_TO_SAVE = 1000
 USE_PREDEFINED_POSTSFETCHER_CONFIGURATOR = True
+SLEEP_TIME_AFTER_FETCHING = 3600
 DEBUG_MODE = False
 COMMENTS_ENABLED = True
