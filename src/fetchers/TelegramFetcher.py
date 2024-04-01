@@ -8,12 +8,13 @@ from datetime import datetime, timedelta, timezone
 from typing import Callable, List
 
 import pytz
-from config import (COMMENTS_ENABLED, NUMBER_OF_MESSAGES_TO_SAVE, SESSION,
-                    TIMEZONE)
-from src.adaptors.TelethonAdaptors import (convert_telethon_channel,
-                                           convert_telethon_comment,
-                                           convert_telethon_post,
-                                           convert_telethon_user)
+from config import COMMENTS_ENABLED, NUMBER_OF_MESSAGES_TO_SAVE, SESSION, TIMEZONE
+from src.adaptors.TelethonAdaptors import (
+    convert_telethon_channel,
+    convert_telethon_comment,
+    convert_telethon_post,
+    convert_telethon_user,
+)
 from src.entities.Channel import Channel
 from src.entities.Post import Post
 from src.entities.User import User

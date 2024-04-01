@@ -52,11 +52,13 @@ SLEEP_TIME_AFTER_FETCHING - [actual only if USE_PREDEFINED_POSTSFETCHER_CONFIGUR
 							needed because we do fetching when there is a request message in queue.
 DEBUG_MODE - defines if we run programm in debug mode or production. Debug logs will also be added to logfile.
 COMMENTS_ENABLED - defines if posts should contain comments or programm could omit them.
+QUEUE_READ_SLEEP_TIME - time between each time programm tries to read messages from queue.
 """
 INDENT_FOR_SAVED_JSON_DATA = 0
 TIMEZONE = "Europe/Kiev"
 NUMBER_OF_MESSAGES_TO_SAVE = 1000
-USE_PREDEFINED_POSTSFETCHER_CONFIGURATOR = True
+USE_PREDEFINED_POSTSFETCHER_CONFIGURATOR = False
 SLEEP_TIME_AFTER_FETCHING = 3600
-DEBUG_MODE = False
-COMMENTS_ENABLED = True
+DEBUG_MODE = True
+COMMENTS_ENABLED = False
+QUEUE_READ_SLEEP_TIME = 100 # in seconds

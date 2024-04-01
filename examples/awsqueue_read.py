@@ -28,7 +28,7 @@ if "Messages" in response:
     for message in messages:
         message_body = message["Body"]
         print("Received message:", message_body)
-
+        print(message)
         # Delete the message from the queue once processed
         receipt_handle = message["ReceiptHandle"]
         sqs.delete_message(QueueUrl=queueUrl, ReceiptHandle=receipt_handle)

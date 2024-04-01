@@ -78,6 +78,10 @@ def determine_tasks_to_run(
 
 
 async def posts_retriever():
+    # object for posts fetcher configuration
+    posts_fetcher_configurator = PostsFetcherConfigurator()
+    posts_fetcher_config = posts_fetcher_configurator.get_posts_fetcher_configuration()
+
     # object for retriving data from service.
     posts_fetcher = await get_posts_fetcher()
 
@@ -85,21 +89,17 @@ async def posts_retriever():
     data_processor = get_data_processor()
     data_saver = lambda channel: data_processor(channel)
 
-    # object for posts fetcher configuration
-    posts_fetcher_configurator = PostsFetcherConfigurator()
-    posts_fetcher_config = posts_fetcher_configurator.get_posts_fetcher_configuration()
-
     tasks = []
     try:
         tasks = determine_tasks_to_run(posts_fetcher_config, data_saver, posts_fetcher)
     except Exception as e:
-        logger.warning(f"Some exception occured: {e}")
+        logger.warning(f"Some exception occured in task determining: {e}")
 
     if len(tasks) > 0:
         print("Data is fetching... It may take some time.")
         results = await asyncio.gather(*tasks)
     else:
-        print("No task for fetching. Maybe some error occured. Check logs: ./logs")
+        print("No task for fetching. Maybe some error occured. Check logs: ./tmp/logs")
 
     ## No need to process results as it is already processed
     # for channel, result in zip(channels, results):
@@ -127,5 +127,5 @@ if __name__ == "__main__":
                     f"Program going to sleep for time={SLEEP_TIME_AFTER_FETCHING} seconds"
                 )
                 time.sleep(SLEEP_TIME_AFTER_FETCHING)
-        except:
-            pass
+        except Exception as e:
+            logger.error(e, only_debug_mode=True)
