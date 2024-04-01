@@ -7,3 +7,6 @@ FTP_HOSTNAME = # str
 FTP_PORT = # int
 FTP_USERNAME = # str
 FTP_PASSWORD = # str
+
+# URL to aws queue
+QUEUE_URL = # str
