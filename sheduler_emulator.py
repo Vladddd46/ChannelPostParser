@@ -42,7 +42,7 @@ for i in channels:
         "telegram_channel_id": i,
         "from_date": _from_date,
         "to_date": _current_date,
-        "is_backfill": False
+        "is_backfill": False,
     }
     predefined_config.append(cfg1)
 

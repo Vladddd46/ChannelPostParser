@@ -10,11 +10,11 @@ import time
 from datetime import datetime
 
 import boto3
-from config import QUEUE_READ_SLEEP_TIME, USE_PREDEFINED_POSTSFETCHER_CONFIGURATOR
+from config import QUEUE_READ_SLEEP_TIME, USE_PREDEFINED_REQUESTS
 from src.entrypoints.config_posts_fetcher import predefined_config
 from src.utils.Logger import logger
 from tmp.creds import QUEUE_URL
-
+from src.adaptors.RequestFormatAdaptors import adopt_request_to_task_format
 
 class PostsFetcherConfigurator:
     def __validate_queue(self, queue):
@@ -30,49 +30,15 @@ class PostsFetcherConfigurator:
             ret = False
         return ret
 
-    def __validate_request(self, request):
-        # check if request has the proper format.
-        try:
-            json_object = json.loads(request)
-            if isinstance(json_object, dict):
-                return True
-            else:
-                return False
-        except ValueError:
-            return False
-
     def __init__(self):
         self.sqs_client = boto3.client("sqs", region_name="us-east-1")
         if (
-            USE_PREDEFINED_POSTSFETCHER_CONFIGURATOR == True
+            USE_PREDEFINED_REQUESTS == False
             and self.__validate_queue(QUEUE_URL) == False
         ):
             exit(1)
 
-    def __convert_message_body_in_request(self, message_body):
-        req = json.loads(message_body)
-        try:
-            if "params" in req.keys():
-                if "date" in req["params"].keys():
-                    tmp_date = req["params"]["date"]
-                    new_date = datetime.strptime(tmp_date, "%Y-%m-%d")
-                    req["params"]["date"] = new_date
-                if (
-                    "from_date" in req["params"].keys()
-                    and "to_date" in req["params"].keys()
-                ):
-                    _from_date_str = req["params"]["from_date"]
-                    _to_date_str = req["params"]["to_date"]
-                    _from_date = datetime.strptime(_from_date_str, "%Y-%m-%d")
-                    _to_date = datetime.strptime(_to_date_str, "%Y-%m-%d")
-                    req["params"]["from_date"] = _from_date
-                    req["params"]["to_date"] = _to_date
-        except Exception as e:
-            logger.error(f"Error occured during date conversation: {e}")
-            req = {}
-        return req
-
-    def __get_request_from_queue(self):
+    def __read_queue(self):
         # Waits until the message appears in queue.
         # Reads message from queue, deletes messeage after read,
         # returns message body.
@@ -91,32 +57,68 @@ class PostsFetcherConfigurator:
                 else:
                     message = messages[0]
                     message_body = message["Body"]
+
+                    # TODO: maybe add confirming mechanism, when requests from queue will be deleted,
+                    #       only after success data retrieval.
                     # Delete the message from the queue once processed
                     receipt_handle = message["ReceiptHandle"]
                     self.sqs_client.delete_message(
                         QueueUrl=QUEUE_URL, ReceiptHandle=receipt_handle
                     )
+
                     logger.info(
                         f"Received message_body={message_body}", only_debug_mode=True
                     )
-
-                    if self.__validate_request(message_body) == True:
-                        req = self.__convert_message_body_in_request(message_body)
-                        return req
-                    else:
-                        logger.warning(f"Message is not convertable in json")
+                    return message_body
             else:
                 logger.info(f"No messages available in the queue", only_debug_mode=True)
-
             time.sleep(QUEUE_READ_SLEEP_TIME)
 
-    def get_posts_fetcher_configuration(self):
+    def __validate_request(self, request):
+        # check if request has the proper format.
+        try:
+            json_object = json.loads(request)
+            if isinstance(json_object, dict):
+                return True
+            else:
+                return False
+        except ValueError:
+            return False
+
+    def __convert_message_in_request(self, message):
+        req = None
+        if self.__validate_request(message) == True:
+            tmp_req = json.loads(message)
+            try:
+                if "from_date" in tmp_req.keys() and "to_date" in tmp_req.keys():
+                    _from_date_str = tmp_req["from_date"]
+                    _to_date_str = tmp_req["to_date"]
+                    _from_date = datetime.strptime(_from_date_str, "%Y-%m-%d")
+                    _to_date = datetime.strptime(_to_date_str, "%Y-%m-%d")
+                    tmp_req["from_date"] = _from_date
+                    tmp_req["to_date"] = _to_date
+                req = tmp_req
+            except Exception as e:
+                logger.error(f"Error occured during date conversation: {e}")
+        return req
+
+    def __get_request_from_queue(self):
+        req = None
+        while True:
+            data = self.__read_queue()
+            req = self.__convert_message_in_request(data)
+            if req != None:
+                break
+        return req
+
+    def get_request(self):
         logger.info(
-            f"Getting posts fetcher configuration | use_predefined_data={USE_PREDEFINED_POSTSFETCHER_CONFIGURATOR}"
+            f"Getting request from queue | use_predefined_data={USE_PREDEFINED_REQUESTS}"
         )
         ret = None
-        if USE_PREDEFINED_POSTSFETCHER_CONFIGURATOR == True:
+        if USE_PREDEFINED_REQUESTS == True:
             ret = predefined_config
         else:
-            ret = self.__get_request_from_queue()
+            req = self.__get_request_from_queue()
+            ret = adopt_request_to_task_format(req)
         return ret

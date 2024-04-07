@@ -7,7 +7,7 @@ from src.entrypoints.PostsFetcher import get_posts_fetcher, PostsFetcher
 from src.utils.Logger import logger
 from src.entrypoints.PostsFetcherConfigurator import PostsFetcherConfigurator
 from src.entities.Channel import Channel
-from config import USE_PREDEFINED_POSTSFETCHER_CONFIGURATOR, SLEEP_TIME_AFTER_FETCHING
+from config import USE_PREDEFINED_REQUESTS, SLEEP_TIME_AFTER_FETCHING
 
 
 # Determines, which tasks should be run based on config
@@ -80,7 +80,7 @@ def determine_tasks_to_run(
 async def posts_retriever():
     # object for posts fetcher configuration
     posts_fetcher_configurator = PostsFetcherConfigurator()
-    posts_fetcher_config = posts_fetcher_configurator.get_posts_fetcher_configuration()
+    request_to_handle = posts_fetcher_configurator.get_request()
 
     # object for retriving data from service.
     posts_fetcher = await get_posts_fetcher()
@@ -91,7 +91,7 @@ async def posts_retriever():
 
     tasks = []
     try:
-        tasks = determine_tasks_to_run(posts_fetcher_config, data_saver, posts_fetcher)
+        tasks = determine_tasks_to_run(request_to_handle, data_saver, posts_fetcher)
     except Exception as e:
         logger.warning(f"Some exception occured in task determining: {e}")
 
@@ -122,7 +122,7 @@ if __name__ == "__main__":
             #  then we need to define sleep time between each fetching.
             # If we use queue, we gonna do fetching each time,
             #  there is message in queue
-            if USE_PREDEFINED_POSTSFETCHER_CONFIGURATOR == True:
+            if USE_PREDEFINED_REQUESTS == True:
                 logger.info(
                     f"Program going to sleep for time={SLEEP_TIME_AFTER_FETCHING} seconds"
                 )
