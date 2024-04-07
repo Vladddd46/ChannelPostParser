@@ -35,12 +35,19 @@ else:
     exit(1)
 
 # write in queue
-predefined_config = {
-    "channels": ["ssternenko", "russvolcorps", "ded_shinibi"],
-    "function": "get_posts_by_date_range",
-    "params": {"from_date": _from_date, "to_date": _current_date},
-}
-json_string = json.dumps(predefined_config, cls=CustomJSONEncoder)
-response = sqs.send_message(QueueUrl=queueUrl, MessageBody=json_string)
+predefined_config = []
+channels = ["ssternenko", "russvolcorps", "ded_shinibi"]
+for i in channels:
+    cfg1 = {
+        "telegram_channel_id": i,
+        "from_date": _from_date,
+        "to_date": _current_date,
+        "is_backfill": False
+    }
+    predefined_config.append(cfg1)
 
-print("response:", response)
+
+for req in predefined_config:
+    json_string = json.dumps(req, cls=CustomJSONEncoder)
+    response = sqs.send_message(QueueUrl=queueUrl, MessageBody=json_string)
+    print("response:", response)
