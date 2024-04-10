@@ -53,6 +53,7 @@ SLEEP_TIME_AFTER_FETCHING - [actual only if USE_PREDEFINED_REQUESTS=True] - defi
 DEBUG_MODE - defines if we run programm in debug mode or production. Debug logs will also be added to logfile.
 COMMENTS_ENABLED - defines if posts should contain comments or programm could omit them.
 QUEUE_READ_SLEEP_TIME - time between each time programm tries to read messages from queue.
+LOG_ENABLED - enables/disables write in log.
 """
 INDENT_FOR_SAVED_JSON_DATA = 0
 TIMEZONE = "Europe/Kiev"
@@ -62,3 +63,4 @@ SLEEP_TIME_AFTER_FETCHING = 3600
 DEBUG_MODE = True
 COMMENTS_ENABLED = True
 QUEUE_READ_SLEEP_TIME = 1 # in seconds
+LOG_ENABLED = False
