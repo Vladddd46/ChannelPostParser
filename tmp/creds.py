@@ -9,7 +9,7 @@ FTP_USERNAME = # str
 FTP_PASSWORD = # str
 
 # URL to aws queue
-QUEUE_URL = # str
-AWS_ACCESS_KEY_ID = # str
+REQUEST_QUEUE_URL = # str
+RESPONSE_QUEUE_URL = # str
 AWS_SECRET_ACCESS_KEY = # str
 AWS_REGION_NAME = # str
