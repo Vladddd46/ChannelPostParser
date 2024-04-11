@@ -9,23 +9,23 @@ from typing import List
 class Response:
     def __init__(
         self,
-        channel,
+        channels,
         is_backfill: bool,
-        fetched_at: datetime.datetime,
+        fetched_at: datetime,
         files: List[str],
     ):
-        self._channel = channel
+        self._channels = channels
         self._is_backfill = is_backfill
         self._fetched_at = fetched_at
         self._files = files
 
     @property
-    def channel(self):
-        return self._channel
+    def channels(self):
+        return self._channels
 
-    @channel.setter
-    def channel(self, channel) -> None:
-        self._channel = channel
+    @channels.setter
+    def channels(self, channels) -> None:
+        self._channels = channels
 
     @property
     def is_backfill(self) -> bool:
@@ -36,11 +36,11 @@ class Response:
         self._is_backfill = is_backfill
 
     @property
-    def fetched_at(self) -> datetime.datetime:
+    def fetched_at(self) -> datetime:
         return self._fetched_at
 
     @fetched_at.setter
-    def fetched_at(self, fetched_at: datetime.datetime) -> None:
+    def fetched_at(self, fetched_at: datetime) -> None:
         self._fetched_at = fetched_at
 
     @property
@@ -53,8 +53,14 @@ class Response:
 
     def to_json(self) -> dict:
         return {
-            "channel": self.channel,
+            "channels": self.channels,
             "is_backfill": self.is_backfill,
             "fetched_at": self.fetched_at,
             "files": self.files,
         }
+
+    def __str__(self):
+        return f"Response | channels={self.channels}, is_backfill={self.is_backfill}, files={self.files}"
+
+    def __repr__(self):
+        return f"Response | channels={self.channels}, is_backfill={self.is_backfill}, files={self.files}"

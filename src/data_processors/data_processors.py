@@ -18,12 +18,12 @@ from src.entities.Channel import Channel
 from src.entrypoints.FtpServer import FtpServer
 from tmp.creds import FTP_HOSTNAME, FTP_PASSWORD, FTP_PORT, FTP_USERNAME
 from src.utils.Logger import logger
+from src.utils.Utils import generate_filename
 
 
 def _dump_data_to_json(channel: Channel):
-    current_datetime = datetime.now().strftime("%Y-%m-%d_%H-%M-%S-%f")
-    filename = f"{channel.channel_id}_{current_datetime}.json"
-    path = RETRIVED_DATA_STORAGE_PATH + filename
+    fname = generate_filename(tag=str(channel.channel_id))
+    path = RETRIVED_DATA_STORAGE_PATH + fname
 
     datetime_serializer = (
         lambda obj: obj.isoformat() if isinstance(obj, datetime) else None
@@ -37,6 +37,7 @@ def _dump_data_to_json(channel: Channel):
             default=datetime_serializer,
             ensure_ascii=False,
         )
+    return fname
 
 
 # Define global variable _serv in order it initialize only once.
@@ -48,9 +49,9 @@ if DATA_PROCESSOR == "ftp":
 
 
 def _dump_data_to_ftp(channel: Channel):
-    _serv.save_json(
-        data=channel.to_json(), path=FTP_SAVE_DIR_PATH, data_id=channel.channel_id
-    )
+    fname = generate_filename(tag=str(channel.channel_id))
+    _serv.save_json(data=channel.to_json(), path=FTP_SAVE_DIR_PATH, filename=fname)
+    return fname
 
 
 def get_data_processor():

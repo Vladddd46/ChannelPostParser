@@ -54,6 +54,7 @@ class TelegramFetcher(FetcherInterface):
         offset_date: datetime = datetime.now(pytz.utc).date() + timedelta(days=1),
         from_date: datetime = None,
     ):
+        files = []  # filenames, where data was saved
         number_of_retrieved_messages = 0
         logger.info(
             f"Requested to retrieve posts from \n\tchannel={channel_username}\n\tlimit={limit}"
@@ -113,16 +114,18 @@ class TelegramFetcher(FetcherInterface):
                     # this approach is used in order not to load memory with
                     # big amount of data.
                     if number_of_retrieved_messages > NUMBER_OF_MESSAGES_TO_SAVE:
-                        data_saver(channel)
+                        filename = data_saver(channel)
+                        files.append(filename)
                         number_of_retrieved_messages = 0
                         channel.posts = []
             if len(channel.posts) != 0:
-                data_saver(channel)
+                filename = data_saver(channel)
+                files.append(filename)
         except Exception as e:
             logger.error(
                 f"Exception while retrieving posts from chat={channel.channel_id}: {e}"
             )
-        return channel  # Exception occured.
+        return files
 
     # overrride
     async def setup(self):

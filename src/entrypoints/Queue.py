@@ -5,18 +5,17 @@ import json
 import time
 
 import boto3
-from config import QUEUE_READ_SLEEP_TIME, USE_PREDEFINED_REQUESTS
+from config import QUEUE_READ_SLEEP_TIME
 from src.utils.Logger import logger
-from tmp.creds import QUEUE_URL
+from tmp.creds import REQUEST_QUEUE_URL
+from src.utils.JsonEnDeCoders import DateTimeEncoder
 
 
 class Queue:
-    def __init__(self):
+    def __init__(self, url: str):
         self.sqs_client = boto3.client("sqs", region_name="us-east-1")
-        if (
-            USE_PREDEFINED_REQUESTS == False
-            and self.__validate_queue(QUEUE_URL) == False
-        ):
+        self.url = url
+        if self.__validate_queue(url) == False:
             exit(1)
 
     def __validate_queue(self, queue):
@@ -34,12 +33,12 @@ class Queue:
         return ret
 
     def __read_queue(self):
-        # Waits until the message appears in queue.
-        # Reads message from queue, deletes message after read,
-        # returns message body.
+        # @brief:Waits until the message appears in queue.
+        #        Reads message from queue, deletes message after read,
+        # @return: message body: dict.
         while True:
             response = self.sqs_client.receive_message(
-                QueueUrl=QUEUE_URL,
+                QueueUrl=REQUEST_QUEUE_URL,
                 MaxNumberOfMessages=1,
                 VisibilityTimeout=10,
                 WaitTimeSeconds=5,
@@ -56,7 +55,7 @@ class Queue:
                     # Delete the message from the queue once processed
                     receipt_handle = message["ReceiptHandle"]
                     self.sqs_client.delete_message(
-                        QueueUrl=QUEUE_URL, ReceiptHandle=receipt_handle
+                        QueueUrl=REQUEST_QUEUE_URL, ReceiptHandle=receipt_handle
                     )
 
                     logger.info(
@@ -88,3 +87,9 @@ class Queue:
             if message != None:
                 break
         return message
+
+    def send_message(self, message):
+        # TODO: add validation of message
+        message = json.dumps(message, cls=DateTimeEncoder)
+        response = self.sqs_client.send_message(QueueUrl=self.url, MessageBody=message)
+        return response

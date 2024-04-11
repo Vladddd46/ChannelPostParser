@@ -7,9 +7,11 @@ import json
 
 year = 365
 two_years = year * 2
+two_days = 2
 
+fromtime = two_days
 _current_date = datetime.now().date()
-_from_date = _current_date - timedelta(days=two_years)
+_from_date = _current_date - timedelta(days=fromtime)
 
 
 # encodes date in json.
@@ -36,7 +38,8 @@ else:
 
 # write in queue
 predefined_config = []
-channels = ["ssternenko", "russvolcorps", "ded_shinibi"]
+# channels = ["ssternenko", "russvolcorps", "ded_shinibi"]
+channels = ["russvolcorps"]
 for i in channels:
     cfg1 = {
         "telegram_channel_id": i,

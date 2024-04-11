@@ -19,13 +19,14 @@ from src.adaptors.RequestFormatAdaptors import (
     convert_message_to_request,
 )
 from src.entities import Request
+from tmp.creds import REQUEST_QUEUE_URL
 
 
 class PostsFetcherConfigurator:
     def __init__(self):
         self.queue = None
         if USE_PREDEFINED_REQUESTS == False:
-            self.queue = Queue()
+            self.queue = Queue(url=REQUEST_QUEUE_URL)
 
     def get_request(self) -> Request:
         logger.info(

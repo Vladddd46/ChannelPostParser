@@ -28,9 +28,7 @@ class FtpServer:
     def cd(self, path: str):
         self.sftp.chdir(path)
 
-    def save_json(self, data: Union[list, dict], path: str, data_id: str = ""):
-        current_datetime = datetime.now().strftime("%Y-%m-%d_%H-%M-%S-%f")
-        filename = f"{data_id}_{current_datetime}.json"
+    def save_json(self, data: Union[list, dict], path: str, filename: str):
         datetime_serializer = (
             lambda obj: obj.isoformat() if isinstance(obj, datetime) else None
         )

@@ -2,13 +2,17 @@ import asyncio
 import time
 from datetime import datetime
 from typing import Callable
+
+from config import SLEEP_TIME_AFTER_FETCHING, USE_PREDEFINED_REQUESTS
 from src.data_processors.data_processors import get_data_processor
-from src.entrypoints.PostsFetcher import get_posts_fetcher, PostsFetcher
-from src.utils.Logger import logger
-from src.entrypoints.PostsFetcherConfigurator import PostsFetcherConfigurator
 from src.entities.Channel import Channel
-from src.entities.Request import RequestCode, Request
-from config import USE_PREDEFINED_REQUESTS, SLEEP_TIME_AFTER_FETCHING
+from src.entities.Request import Request, RequestCode
+from src.entrypoints.PostsFetcher import PostsFetcher, get_posts_fetcher
+from src.entrypoints.PostsFetcherConfigurator import PostsFetcherConfigurator
+from src.entrypoints.Queue import Queue
+from src.utils.Logger import logger
+from src.utils.Utils import create_response
+from tmp.creds import RESPONSE_QUEUE_URL
 
 
 # Determines, which tasks should be run based on request
@@ -60,40 +64,35 @@ async def posts_retriever():
     data_processor = get_data_processor()
     data_saver = lambda channel: data_processor(channel)
 
+    # queue for sending response
+    response_queue = Queue(RESPONSE_QUEUE_URL)
+
     while True:
-        request_to_handle = posts_fetcher_configurator.get_request()
-        logger.info(
-            f"Request {request_to_handle.rid} | {request_to_handle.data} | msg={request_to_handle.error_msg}"
-        )
-        if request_to_handle.code == RequestCode.OK:
-            tasks = determine_tasks_to_run(request_to_handle, data_saver, posts_fetcher)
-            if len(tasks) > 0:
-                print("Data is fetching... It may take some time.")
-                results = await asyncio.gather(*tasks)
-            else:
-                print("No task for fetching. Maybe some error occured")
+        try:
+            request_to_handle = posts_fetcher_configurator.get_request()
+            logger.info(
+                f"Request {request_to_handle.rid} | {request_to_handle.data} | msg={request_to_handle.error_msg}"
+            )
+            start_time = time.time()
+            if request_to_handle.code == RequestCode.OK:
+                tasks = determine_tasks_to_run(request_to_handle, data_saver, posts_fetcher)
+                if len(tasks) > 0:
+                    print("Data is fetching... It may take some time.")
+                    results = await asyncio.gather(*tasks)
+                    response = create_response(req=request_to_handle, filenames=results)
+                    response = response.to_json()
+                    response_queue.send_message(response)
+                else:
+                    print("No task for fetching. Maybe some error occured")
+            end_time = time.time()
+            logger.info(f"Fetching time={end_time-start_time} seconds")
+        except Exception as e:
+            logger.error(f"Unknown error occured: {e}")
 
     await posts_fetcher.cleanup()
 
 
 if __name__ == "__main__":
-    while True:
-        try:
-            logger.info("=Program started=")
-            start_time = time.time()
-            asyncio.run(posts_retriever())
-            end_time = time.time()
-            logger.info(f"Program time={end_time-start_time} seconds")
-            print("===Complete===")
-
-            # If we use predefined configuration instead of reading from queue,
-            #  then we need to define sleep time between each fetching.
-            # If we use queue, we gonna do fetching each time,
-            #  there is message in queue
-            if USE_PREDEFINED_REQUESTS == True:
-                logger.info(
-                    f"Program going to sleep for time={SLEEP_TIME_AFTER_FETCHING} seconds"
-                )
-                time.sleep(SLEEP_TIME_AFTER_FETCHING)
-        except Exception as e:
-            logger.error(e, only_debug_mode=True)
+    logger.info("=Program started=", only_debug_mode=True)
+    asyncio.run(posts_retriever())
+    logger.info("===Complete===", only_debug_mode=True)
