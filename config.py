@@ -15,8 +15,8 @@ SERVICE_NAME = "telegram"
 defines, which function will be user for processing data
 after retrieval from service.
 """
-DATA_PROCESSOR = "json"  # saves fetched data in json.
-# DATA_PROCESSOR = "ftp" # sends fetched data to ftp.
+# DATA_PROCESSOR = "json"  # saves fetched data in json.
+DATA_PROCESSOR = "ftp" # sends fetched data to ftp.
 
 
 """
