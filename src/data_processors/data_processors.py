@@ -21,7 +21,7 @@ from src.utils.Logger import logger
 from src.utils.Utils import generate_filename
 
 
-def _dump_data_to_json(channel: Channel):
+def _dump_data_to_json(channel: Channel) -> str:
     fname = generate_filename(tag=str(channel.channel_id))
     path = RETRIVED_DATA_STORAGE_PATH + fname
 
@@ -48,13 +48,14 @@ if DATA_PROCESSOR == "ftp":
     _serv = FtpServer(FTP_HOSTNAME, FTP_PORT, FTP_USERNAME, FTP_PASSWORD)
 
 
-def _dump_data_to_ftp(channel: Channel):
+def _dump_data_to_ftp(channel: Channel) -> str:
     fname = generate_filename(tag=str(channel.channel_id))
     _serv.save_json(data=channel.to_json(), path=FTP_SAVE_DIR_PATH, filename=fname)
     return fname
 
 
 def get_data_processor():
+    # Eeach data processor should return fname.
     if DATA_PROCESSOR == "json":
         return _dump_data_to_json
     elif DATA_PROCESSOR == "ftp":
@@ -62,4 +63,4 @@ def get_data_processor():
     else:
         logger.error(f"Not supported DATA_PROCESSOR={DATA_PROCESSOR} in config.py")
         exit(1)
-    logger.info(f"Selected DATA_PROCESSOR={DATA_PROCESSOR}")
+    logger.info(f"Selected DATA_PROCESSOR={DATA_PROCESSOR}", only_debug_mode=True)

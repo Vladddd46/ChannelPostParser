@@ -1,17 +1,22 @@
 # Emulates scheduler.
 # writes messages in queue
 
-import boto3
-from datetime import datetime, timedelta, date
 import json
+from datetime import date, datetime, timedelta
 
+import boto3
+
+from tmp.creds import REQUEST_QUEUE_URL
+
+# defines
 year = 365
 two_years = year * 2
-two_days = 2
+hundred_days = 100
 
-fromtime = two_days
+fromtime = hundred_days
 _current_date = datetime.now().date()
 _from_date = _current_date - timedelta(days=fromtime)
+#######################################################
 
 
 # encodes date in json.
@@ -25,21 +30,13 @@ class CustomJSONEncoder(json.JSONEncoder):
 sqs = boto3.client("sqs", region_name="us-east-1")  # Create SQS client
 response = sqs.list_queues()
 
-if "QueueUrls" not in response.keys():
-    print("No 'QueueUrls' key")
-    exit(1)
-allAvailableQueues = response["QueueUrls"]
 
-if len(allAvailableQueues) > 0:
-    queueUrl = allAvailableQueues[0]
-else:
-    print("No queue found")
-    exit(1)
+allAvailableQueues = response["QueueUrls"]
+queueUrl = REQUEST_QUEUE_URL
 
 # write in queue
-predefined_config = []
-# channels = ["ssternenko", "russvolcorps", "ded_shinibi"]
-channels = ["russvolcorps"]
+predefined_requests = []
+channels = ["russvolcorps", "ded_shinibi"]#, "ssternenko"]
 for i in channels:
     cfg1 = {
         "telegram_channel_id": i,
@@ -47,10 +44,9 @@ for i in channels:
         "to_date": _current_date,
         "is_backfill": False,
     }
-    predefined_config.append(cfg1)
+    predefined_requests.append(cfg1)
 
-
-for req in predefined_config:
+for req in predefined_requests:
     json_string = json.dumps(req, cls=CustomJSONEncoder)
     response = sqs.send_message(QueueUrl=queueUrl, MessageBody=json_string)
     print("response:", response)

@@ -8,7 +8,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Callable, List
 
 import pytz
-from config import COMMENTS_ENABLED, NUMBER_OF_MESSAGES_TO_SAVE, SESSION, TIMEZONE
+from config import COMMENTS_ENABLED, NUMBER_OF_MESSAGES_TO_SAVE, SESSION, TIMEZONE, COMMENTS_LIMIT
 from src.adaptors.TelethonAdaptors import (
     convert_telethon_channel,
     convert_telethon_comment,
@@ -53,7 +53,7 @@ class TelegramFetcher(FetcherInterface):
         data_saver: Callable[[Channel], None],
         offset_date: datetime = datetime.now(pytz.utc).date() + timedelta(days=1),
         from_date: datetime = None,
-    ):
+    ) -> List[str]:
         files = []  # filenames, where data was saved
         number_of_retrieved_messages = 0
         logger.info(
@@ -83,10 +83,13 @@ class TelegramFetcher(FetcherInterface):
                     number_of_retrieved_messages += 1
                     limit -= 1  # decreases number of posts should be retrieved.
                     if COMMENTS_ENABLED == True:
+                        comments_limit = 0
                         try:
                             async for comment in self.client.iter_messages(
                                 telethon_channel, reply_to=message.id
                             ):
+                                if COMMENTS_LIMIT != -1 and comments_limit >= COMMENTS_LIMIT:
+                                    break
                                 from_user = User(-1, "UNKNOWN_USER")
                                 try:
                                     if hasattr(comment.from_id, "user_id"):
@@ -102,6 +105,7 @@ class TelegramFetcher(FetcherInterface):
                                 )
                                 post.add_comment(tmp_comment)
                                 number_of_retrieved_messages += 1
+                                comments_limit += 1
                         except Exception as e:
                             # this may happen when comment was deleted.
                             logger.warning(

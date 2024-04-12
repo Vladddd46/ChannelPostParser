@@ -1,3 +1,4 @@
+# cleans ./tmp/logs/, ./tmp/retrieved_data folders.
 from config import LOG_PATH, RETRIVED_DATA_STORAGE_PATH
 import glob
 import os
@@ -16,6 +17,7 @@ def remove_files(pattern):
             print(f"No files found matching the pattern '{pattern}'.")
     except Exception as e:
         print(f"An error occurred while deleting files: {e}")
+
 
 def remove_directory(path):
     try:

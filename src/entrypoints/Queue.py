@@ -12,8 +12,8 @@ from src.utils.JsonEnDeCoders import DateTimeEncoder
 
 
 class Queue:
-    def __init__(self, url: str):
-        self.sqs_client = boto3.client("sqs", region_name="us-east-1")
+    def __init__(self, url: str, region_name: str):
+        self.sqs_client = boto3.client("sqs", region_name=region_name)
         self.url = url
         if self.__validate_queue(url) == False:
             exit(1)
@@ -89,7 +89,14 @@ class Queue:
         return message
 
     def send_message(self, message):
-        # TODO: add validation of message
-        message = json.dumps(message, cls=DateTimeEncoder)
-        response = self.sqs_client.send_message(QueueUrl=self.url, MessageBody=message)
+        response = None
+        try:
+            if not isinstance(message, dict):
+                raise Exception("is not isinstance of dict")
+            message = json.dumps(message, cls=DateTimeEncoder)
+            response = self.sqs_client.send_message(
+                QueueUrl=self.url, MessageBody=message
+            )
+        except Exception as e:
+            logger.error(f"message has wrong format: {e}")
         return response
