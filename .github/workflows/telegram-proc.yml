@@ -1,0 +1,96 @@
+name: DEV - Deploy management
+env:
+  AWS_REGION: us-east-1
+  SERVICE: telegram-proc
+
+on: 
+  workflow_dispatch:
+  push:
+    branches: [ "lambda" ]
+  pull_request:
+    branches: [ "lambda" ]
+
+jobs:
+  deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout self
+      uses: actions/checkout@v4
+      with:
+        path: app
+
+    - name: checkout terraform
+      uses: actions/checkout@v4
+      with:
+        repository: CompanyB-TeamDelta/terraform
+        path: terraform
+
+    - name: add session file
+      working-directory: app
+      run: |
+        ls -a
+        
+    - name: add session file
+      working-directory: app/tmp
+      run: |
+        echo "${{ secrets.SESSIONB64 }}" | base64 --decode > anon.session
+        echo "${{ secrets.ENVPY }}" | base64 --decode > creds.py
+        
+    - name: copy management build
+      run: |
+        ls -a
+        cp -r app ./terraform/telegram-proc/
+        cd ./terraform/telegram-proc/
+        ls -a
+        
+    - name: Build Docker image
+      run: |
+        cd ./terraform/telegram-proc/
+        docker build --platform=linux/amd64 --no-cache -f Dockerfile -t tg-proc .
+        docker save tg-proc > "tg-proc.tar"
+        ls -a
+    - name: add secret
+      run: |
+        cd ./terraform/telegram-proc/
+        echo "${{ secrets.DATAPROCKEY }}" >> key.pem
+        ls -a
+        chmod 400 key.pem
+      
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v3
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Setup Terraform 
+      uses: hashicorp/setup-terraform@v3
+      with:
+        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+    - name: Terraform init
+      id: init
+      working-directory: terraform/${{ env.SERVICE }}
+      run: terraform init
+
+    - name: Terraform Format
+      id: fmt
+      working-directory: terraform/${{ env.SERVICE }}
+      run: terraform fmt -diff
+
+    # Run a terraform validate
+    - name: Terraform Validate
+      id: validate
+      working-directory: terraform/${{ env.SERVICE }}
+      # Run even if formatting fails
+      if: success() || failure()
+      run: terraform validate -no-color
+
+    - name: Terraform apply
+      id: apply
+      working-directory: terraform/${{ env.SERVICE }}
+      env:
+        TF_LOG: DEBUG
+      run: terraform apply -auto-approve -input=false
