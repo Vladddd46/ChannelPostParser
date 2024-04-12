@@ -10,6 +10,7 @@ class Logger:
             self.logger = logging.getLogger()
             self.logger.handlers = []
             self.logger.setLevel(logging.INFO)
+            logging.getLogger('telethon').setLevel(level=logging.CRITICAL)
             if WRITE_LOG_IN_STDOUT:
                 # Add a StreamHandler to write logs to stdout
                 stream_handler = logging.StreamHandler()
@@ -27,7 +28,7 @@ class Logger:
                 )
                 self.logger.addHandler(file_handler)
 
-    def info(self, msg, only_debug_mode=False):
+    def info(self, msg, only_debug_mode=True):
         if only_debug_mode == True and DEBUG_MODE == False:
             return
         if LOG_ENABLED == True:

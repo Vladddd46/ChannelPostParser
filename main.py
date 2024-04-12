@@ -50,7 +50,7 @@ async def posts_retriever():
                     response = create_response(req=request_to_handle, filenames=results)
                     response = response.to_json()
                     response_queue.send_message(response)
-                    logger.info(f"Response | {response}", only_debug_mode=True)
+                    logger.info(f"Response | {response}")
                 else:
                     logger.info("No task for fetching. Maybe some error occured")
             else:
