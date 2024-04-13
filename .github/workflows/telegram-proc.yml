@@ -36,7 +36,6 @@ jobs:
       working-directory: app/tmp
       run: |
         base64 -d <<< "${{ secrets.SESSIONB64 }}" > anon.session
-        cat anon.session
         echo "${{ secrets.ENVPY }}" | base64 --decode > creds.py
         
     - name: copy management build
