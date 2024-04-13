@@ -6,9 +6,9 @@ env:
 on: 
   workflow_dispatch:
   push:
-    branches: [ "lambda" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "lambda" ]
+    branches: [ "main" ]
 
 jobs:
   deploy:
