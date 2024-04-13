@@ -1,4 +1,4 @@
-name: DEV - Deploy management
+name: DEV - Deploy tg-proc
 env:
   AWS_REGION: us-east-1
   SERVICE: telegram-proc
