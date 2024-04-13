@@ -35,7 +35,7 @@ jobs:
     - name: add session file
       working-directory: app/tmp
       run: |
-        echo "${{ secrets.SESSIONB64 }}" | base64 --decode > anon.session
+        base64 -d <<< "${{ secrets.SESSIONB64 }}" > anon.session
         echo "${{ secrets.ENVPY }}" | base64 --decode > creds.py
         
     - name: copy management build
