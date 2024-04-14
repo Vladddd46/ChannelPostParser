@@ -65,8 +65,10 @@ def convert_message_to_request(message):
         if "from" in message.keys() and "to" in message.keys():
             _from_date_str = message["from"]
             _to_date_str = message["to"]
-            _from_date = datetime.strptime(_from_date_str, "%Y-%m-%d")
-            _to_date = datetime.strptime(_to_date_str, "%Y-%m-%d")
+            # _from_date = datetime.strptime(_from_date_str, "%Y-%m-%d")
+            # _to_date = datetime.strptime(_to_date_str, "%Y-%m-%d")
+            _from_date = datetime.fromisoformat(_from_date_str)
+            _to_date = datetime.fromisoformat(_to_date_str)
             params["from"] = _from_date
             params["to"] = _to_date
         else:
