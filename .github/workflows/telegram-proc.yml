@@ -21,6 +21,12 @@ jobs:
       with:
         path: app
 
+    - name: checkout tdlib
+      uses: actions/checkout@v4
+      with:
+        repository: CompanyB-TeamDelta/tdlib
+        path: tdlib
+
     - name: checkout terraform
       uses: actions/checkout@v4
       with:
