@@ -54,7 +54,7 @@ _channels = [
 predefined_config = {
     "channels": _channels,
     "function": "get_posts_by_date_range",
-    "params": {"from_date": fromdate, "to_date": _current_date},
+    "params": {"from": fromdate, "to": _current_date},
 }
 
 # predefined_config = {

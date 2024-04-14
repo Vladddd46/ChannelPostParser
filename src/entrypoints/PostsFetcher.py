@@ -91,7 +91,7 @@ class PostsFetcher:
         data_saver: Callable[[Channel], None],
     ) -> List[Channel]:
         logger.info(
-            f"Request=get_posts_by_date_range, params: channel_username={channel_username}, from_date={from_date}, to_date={to_date}",
+            f"Request=get_posts_by_date_range, params: channel_username={channel_username}, from={from_date}, to={to_date}",
             only_debug_mode=True,
         )
         data = await self._fetcher.get_posts_by_date_range(

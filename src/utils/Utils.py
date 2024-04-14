@@ -65,8 +65,8 @@ def determine_tasks_to_run(
     elif request_data.name == "get_last_post":
         tasks = [fetcher.get_last_post(channel, data_saver) for channel in channels]
     elif request_data.name == "get_posts_by_date_range":
-        from_date = request_data.params["from_date"]
-        to_date = request_data.params["to_date"]
+        from_date = request_data.params["from"]
+        to_date = request_data.params["to"]
         tasks = [
             fetcher.get_posts_by_date_range(channel, from_date, to_date, data_saver)
             for channel in channels

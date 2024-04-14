@@ -7,7 +7,7 @@ def adopt_request_to_task_format(request):
     res = {
         "channels": [request["telegram_channel_id"]],
         "function": "get_posts_by_date_range",
-        "params": {"from_date": request["from_date"], "to_date": request["to_date"]},
+        "params": {"from": request["from"], "to": request["to"]},
     }
     return res
 
@@ -56,19 +56,22 @@ def convert_message_to_request(message):
         channels = [message["telegram_channel_id"]]
     else:
         result = RequestCode.ERROR
-        error_msg = "No channele field in message"
+        error_msg = "No channel field in message"
 
     if "is_backfill" in message.keys():
         is_backfill = message["is_backfill"]
 
     try:
-        if "from_date" in message.keys() and "to_date" in message.keys():
-            _from_date_str = message["from_date"]
-            _to_date_str = message["to_date"]
+        if "from" in message.keys() and "to" in message.keys():
+            _from_date_str = message["from"]
+            _to_date_str = message["to"]
             _from_date = datetime.strptime(_from_date_str, "%Y-%m-%d")
             _to_date = datetime.strptime(_to_date_str, "%Y-%m-%d")
-            params["from_date"] = _from_date
-            params["to_date"] = _to_date
+            params["from"] = _from_date
+            params["to"] = _to_date
+        else:
+            result = RequestCode.ERROR
+            error_msg = "No date fields(from/to) in message:"
     except Exception as e:
         logger.error(f"Error occured during date conversation: {e}")
 
