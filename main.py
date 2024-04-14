@@ -54,7 +54,7 @@ async def posts_retriever():
                 else:
                     logger.info("No task for fetching. Maybe some error occured")
             else:
-                pass
+                logger.error(f"Error during getting the request: {request_to_handle.error_msg}")
 
             end_time = time.time()
             logger.info(f"Fetching time={end_time-start_time} seconds")
