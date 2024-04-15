@@ -14,30 +14,30 @@ days = 50
 _current_date = datetime.now().date()
 fromdate = _current_date - timedelta(days=days)
 
-# _channels = ["ssternenko", "russvolcorps", "ded_shinibi"]
+_channels = ["ded_shinibi"]
 
-_channels = [
-    "ssternenko",
-    "ukrpravda_news",
-    "Crimeanwind",
-    "DeepStateUA",
-    "TCH_channel",
-    "uniannet",
-    "serhiyprytula",
-    "fighter_bomber",
-    "romanov_92",
-    "SeaPower",
-    "strelkovii",
-    "millettvcrimea",
-    "ZA_FROHT",
-    "tass_agency",
-    "rian_ru",
-    "mod_russia",
-    "rsotmdivision",
-    "rybar",
-    "BILD_Russian",
-    "rferl",
-]
+# _channels = [
+#     "ssternenko",
+#     "ukrpravda_news",
+#     "Crimeanwind",
+#     "DeepStateUA",
+#     "TCH_channel",
+#     "uniannet",
+#     "serhiyprytula",
+#     "fighter_bomber",
+#     "romanov_92",
+#     "SeaPower",
+#     "strelkovii",
+#     "millettvcrimea",
+#     "ZA_FROHT",
+#     "tass_agency",
+#     "rian_ru",
+#     "mod_russia",
+#     "rsotmdivision",
+#     "rybar",
+#     "BILD_Russian",
+#     "rferl",
+# ]
 
 # predefined_config = {
 #     "channels": _channels,
@@ -55,6 +55,7 @@ predefined_config = {
     "channels": _channels,
     "function": "get_posts_by_date_range",
     "params": {"from": fromdate, "to": _current_date},
+    "is_backfill": True
 }
 
 # predefined_config = {

@@ -19,7 +19,7 @@ from src.entrypoints.FtpServer import FtpServer
 from tmp.creds import FTP_HOSTNAME, FTP_PASSWORD, FTP_PORT, FTP_USERNAME
 from src.utils.Logger import logger
 from src.utils.Utils import generate_filename
-
+import config # Crutch
 
 def _dump_data_to_json(channel: Channel) -> str:
     fname = generate_filename(tag=str(channel.channel_id))
@@ -52,6 +52,16 @@ def _dump_data_to_ftp(channel: Channel) -> str:
     channel_id_str = str(channel.channel_id)
     fname = generate_filename(tag=channel_id_str)
     current_date = datetime.now().date()
+
+    # TODO: Crutch:
+    logger.info(f" config.IS_BACKFILL: {config.IS_BACKFILL}")
+    if config.IS_BACKFILL == True:
+        if _serv.directory_exists("./history") == False:
+            res = _serv.create_directory("./history")
+            logger.info(f"Directory=./history was created: {res}")
+        _serv.save_json(data=channel.to_json(), path="./history/", filename=fname)
+        return FTP_SAVE_DIR_PATH + "/history/" + fname
+    ## end of crutch
 
     channel_dir = FTP_SAVE_DIR_PATH + "/" + channel_id_str
     if _serv.directory_exists(channel_dir) == False:

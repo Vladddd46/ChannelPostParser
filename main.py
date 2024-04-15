@@ -10,8 +10,9 @@ from src.entrypoints.PostsFetcherConfigurator import PostsFetcherConfigurator
 from src.entrypoints.Queue import Queue
 from src.utils.Logger import logger
 from src.utils.Utils import create_response, determine_tasks_to_run
+from src.adaptors.RequestFormatAdaptors import convert_str_to_date
 from tmp.creds import RESPONSE_QUEUE_URL, AWS_REGION_NAME
-
+import config
 
 async def posts_retriever():
     # object for getting fetcher configuration
@@ -30,6 +31,14 @@ async def posts_retriever():
     while True:
         try:
             request_to_handle = posts_fetcher_configurator.get_request()
+
+            # TODO Crutch
+            config.IS_BACKFILL = request_to_handle.data.is_backfill
+            if request_to_handle.data.is_backfill == True:
+                request_to_handle.data.params["from"] = convert_str_to_date("2023-03-30T09:23:07.468412+00:00")
+                request_to_handle.data.params["to"] = convert_str_to_date("2024-03-30T09:23:07.468412+00:00")
+            # END OF CRUTCH
+
             logger.info(
                 f"Request {request_to_handle.rid} | {request_to_handle.data} | msg={request_to_handle.error_msg}"
             )
