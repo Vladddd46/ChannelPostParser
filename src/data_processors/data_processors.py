@@ -56,11 +56,21 @@ def _dump_data_to_ftp(channel: Channel) -> str:
     # TODO: Crutch:
     logger.info(f" config.IS_BACKFILL: {config.IS_BACKFILL}")
     if config.IS_BACKFILL == True:
-        if _serv.directory_exists("./upload/history") == False:
-            res = _serv.create_directory("./upload/history")
-            logger.info(f"Directory=./upload/history was created: {res}")
-        _serv.save_json(data=channel.to_json(), path="./upload/history/", filename=fname)
-        return FTP_SAVE_DIR_PATH + "/upload/history/" + fname
+
+        history_path = FTP_SAVE_DIR_PATH + "/history/"
+
+        if _serv.directory_exists(history_path) == False:
+            res = _serv.create_directory(history_path)
+            logger.info(f"Directory={history_path} was created: {res}")
+
+        tmp_channel_folder = history_path + channel_id_str
+        if _serv.directory_exists(tmp_channel_folder) == False:
+            res = _serv.create_directory(tmp_channel_folder)
+            logger.info(f"Directory={tmp_channel_folder} was created: {res}")
+
+        path_to_save_file = tmp_channel_folder + "/"
+        _serv.save_json(data=channel.to_json(), path=path_to_save_file, filename=fname)
+        return path_to_save_file + fname
     ## end of crutch
 
     channel_dir = FTP_SAVE_DIR_PATH + "/" + channel_id_str
