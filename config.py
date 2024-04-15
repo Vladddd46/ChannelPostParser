@@ -26,11 +26,11 @@ WRITE_LOG_IN_STDOUT - defines where to write log. stdout or file.
 COMMENTS_LIMIT - limit for saved comments per post. [works only when COMMENTS_ENABLED=True].
 				 set -1 to have no limit.
 """
-INDENT_FOR_SAVED_JSON_DATA = 0
+INDENT_FOR_SAVED_JSON_DATA = 4
 TIMEZONE = "Europe/Kiev"
-NUMBER_OF_MESSAGES_TO_SAVE = 10000
-USE_PREDEFINED_REQUESTS = False
-DEBUG_MODE = False
+NUMBER_OF_MESSAGES_TO_SAVE = 100
+USE_PREDEFINED_REQUESTS = True
+DEBUG_MODE = True
 COMMENTS_ENABLED = True
 COMMENTS_LIMIT = -1
 QUEUE_READ_SLEEP_TIME = 1  # in seconds
@@ -65,3 +65,5 @@ LOG_PATH - where logs will be saved.
 RETRIVED_DATA_STORAGE_PATH = "./tmp/retrieved_data/"
 LOG_PATH = "./tmp/logs/"
 FTP_SAVE_DIR_PATH = "./upload"
+
+IS_BACKFILL = False # TODO: this is crutch. need to be refactored
