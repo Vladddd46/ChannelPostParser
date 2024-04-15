@@ -14,7 +14,7 @@ days = 50
 _current_date = datetime.now().date()
 fromdate = _current_date - timedelta(days=days)
 
-_channels = ["ded_shinibi"]
+_channels = [-1001101170442]#["ded_shinibi"]
 
 # _channels = [
 #     "ssternenko",
