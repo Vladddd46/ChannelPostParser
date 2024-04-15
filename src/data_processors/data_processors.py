@@ -66,7 +66,7 @@ def _dump_data_to_ftp(channel: Channel) -> str:
 
     path_to_save_file = channel_day_dir + "/"
     _serv.save_json(data=channel.to_json(), path=path_to_save_file, filename=fname)
-    return fname
+    return path_to_save_file + fname
 
 
 def get_data_processor():
