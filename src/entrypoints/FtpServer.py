@@ -41,6 +41,24 @@ class FtpServer:
         with self.sftp.open(path + filename, "w") as file:
             file.write(json_data)
 
+    def directory_exists(self, path: str) -> bool:
+        try:
+            # Try to retrieve information about the directory
+            self.sftp.stat(path)
+            return True
+        except FileNotFoundError:
+            # If the directory does not exist, FileNotFoundError will be raised
+            return False
+        except Exception as e:
+            return False
+
+    def create_directory(self, path: str, mode: int = 0o755) -> bool:
+        try:
+            self.sftp.mkdir(path, mode)
+            return True
+        except Exception as e:
+            return False
+
     def __del__(self):
         self.sftp.close()
         self.transport.close()

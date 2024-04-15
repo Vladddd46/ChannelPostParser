@@ -49,8 +49,23 @@ if DATA_PROCESSOR == "ftp":
 
 
 def _dump_data_to_ftp(channel: Channel) -> str:
-    fname = generate_filename(tag=str(channel.channel_id))
-    _serv.save_json(data=channel.to_json(), path=FTP_SAVE_DIR_PATH, filename=fname)
+    channel_id_str = str(channel.channel_id)
+    fname = generate_filename(tag=channel_id_str)
+    current_date = datetime.now().date()
+
+    channel_dir = FTP_SAVE_DIR_PATH + "/" + channel_id_str
+    if _serv.directory_exists(channel_dir) == False:
+        res = _serv.create_directory(channel_dir)
+        logger.info(f"Directory={channel_dir} was created: {res}")
+
+    # directory of current date in chan
+    channel_day_dir = channel_dir + "/" + str(current_date)
+    if _serv.directory_exists(channel_day_dir) == False:
+        res = _serv.create_directory(channel_day_dir)
+        logger.info(f"Directory={channel_day_dir} was created: {res}")
+
+    path_to_save_file = channel_day_dir + "/"
+    _serv.save_json(data=channel.to_json(), path=path_to_save_file, filename=fname)
     return fname
 
 
