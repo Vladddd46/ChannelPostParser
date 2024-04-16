@@ -34,9 +34,6 @@ async def posts_retriever():
 
             # TODO Crutch
             config.IS_BACKFILL = request_to_handle.data.is_backfill
-            if request_to_handle.data.is_backfill == True:
-                request_to_handle.data.params["from"] = convert_str_to_date("2023-03-30T09:23:07.468412+00:00")
-                request_to_handle.data.params["to"] = convert_str_to_date("2024-03-30T09:23:07.468412+00:00")
             # END OF CRUTCH
 
             logger.info(
