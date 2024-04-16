@@ -27,6 +27,7 @@ async def posts_retriever():
 
     # queue for sending response
     response_queue = Queue(RESPONSE_QUEUE_URL, region_name=AWS_REGION_NAME)
+    live_response_queue = Queue(RESPONSE_QUEUE_URL, region_name=AWS_REGION_NAME)
 
     while True:
         try:
@@ -56,6 +57,7 @@ async def posts_retriever():
                     response = create_response(req=request_to_handle, filenames=results)
                     response = response.to_json()
                     response_queue.send_message(response)
+                    live_response_queue.send_message(response)
                     logger.info(f"Response | {response}")
                 else:
                     logger.info("No task for fetching. Maybe some error occured")
