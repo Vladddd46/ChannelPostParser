@@ -21,6 +21,13 @@ jobs:
       with:
         path: app
 
+    - name: checkout tdlib
+      uses: actions/checkout@v4
+      with:
+        repository: CompanyB-TeamDelta/tdlib
+        token: ${{ secrets.REPO_ACCESS_TOKEN }}
+        path: tdlib
+
     - name: checkout terraform
       uses: actions/checkout@v4
       with:
@@ -31,11 +38,14 @@ jobs:
       working-directory: app
       run: |
         ls -a
-        
+
     - name: add session file
+      run: |
+        cp tdlib/anon.session ./app/tmp
+
+    - name: add creds file
       working-directory: app/tmp
       run: |
-        base64 -d <<< "${{ secrets.SESSIONB64 }}" > anon.session
         echo "${{ secrets.ENVPY }}" | base64 --decode > creds.py
         
     - name: copy management build
