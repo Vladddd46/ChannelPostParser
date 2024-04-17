@@ -11,7 +11,7 @@ from src.entrypoints.Queue import Queue
 from src.utils.Logger import logger
 from src.utils.Utils import create_response, determine_tasks_to_run
 from src.adaptors.RequestFormatAdaptors import convert_str_to_date
-from tmp.creds import RESPONSE_QUEUE_URL, AWS_REGION_NAME
+from tmp.creds import RESPONSE_QUEUE_URL, AWS_REGION_NAME, ANAL_RESPONSE_QUEUE_URL
 import config
 
 async def posts_retriever():
@@ -28,6 +28,7 @@ async def posts_retriever():
     # queue for sending response
     response_queue = Queue(RESPONSE_QUEUE_URL, region_name=AWS_REGION_NAME)
     live_response_queue = Queue(RESPONSE_QUEUE_URL, region_name=AWS_REGION_NAME)
+    analytics_response_queue = Queue(ANAL_RESPONSE_QUEUE_URL, region_name=AWS_REGION_NAME)
 
     while True:
         try:
@@ -59,6 +60,7 @@ async def posts_retriever():
                         response = response.to_json()
                         response_queue.send_message(response)
                         live_response_queue.send_message(response)
+                        analytics_response_queue.send_message(response)
                         logger.info(f"Response | {response}")
                     else:
                         logger.info(f"Error occured during fetching. No response send.")
