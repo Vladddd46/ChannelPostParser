@@ -38,6 +38,8 @@ def create_response(req: Request, filenames: List[List[str]]) -> Response:
     for file_list in filenames:
         for filename in file_list:
             files.append(filename)
+    if len(files) == 0:
+        return None
     date = datetime.now()
     response = Response(
         channels=req.data.channels,

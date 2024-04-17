@@ -129,6 +129,7 @@ class TelegramFetcher(FetcherInterface):
             logger.error(
                 f"Exception while retrieving posts from chat={channel.channel_id}: {e}"
             )
+            files = []
         return files
 
     # overrride
