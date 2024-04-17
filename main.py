@@ -41,9 +41,12 @@ async def handle_request(
             response = create_response(req=request_to_handle, filenames=results)
             if response.is_error == False:
                 response = response.to_json()
-                response_queue.send_message(response)
-                live_response_queue.send_message(response)
-                analytics_response_queue.send_message(response)
+                
+                if request_to_handle.date.is_backfill == False:
+                    response_queue.send_message(response)
+                else:
+                    live_response_queue.send_message(response)
+                    analytics_response_queue.send_message(response)
                 logger.info(f"Response | {response}")
             else:
                 logger.info(f"Error occured during fetching. No response send.")
