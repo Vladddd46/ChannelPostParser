@@ -42,7 +42,7 @@ async def handle_request(
             if response.is_error == False:
                 response = response.to_json()
                 
-                if request_to_handle.data.is_backfill == False:
+                if request_to_handle.data.is_backfill == True:
                     response_queue.send_message(response)
                 else:
                     live_response_queue.send_message(response)
