@@ -13,11 +13,13 @@ class Response:
         is_backfill: bool,
         fetched_at: datetime,
         files: List[str],
+        is_error: bool=False
     ):
         self._channels = channels
         self._is_backfill = is_backfill
         self._fetched_at = fetched_at
         self._files = files
+        self._is_error = is_error
 
     @property
     def channels(self):
@@ -50,6 +52,15 @@ class Response:
     @files.setter
     def files(self, files: List[str]) -> None:
         self._files = files
+
+    @property
+    def is_error(self) -> bool:
+        return self._is_error
+
+    @is_error.setter
+    def is_error(self, is_error: bool) -> None:
+        self._is_error= is_error
+
 
     def to_json(self) -> dict:
         return {

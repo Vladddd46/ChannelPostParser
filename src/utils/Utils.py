@@ -38,14 +38,16 @@ def create_response(req: Request, filenames: List[List[str]]) -> Response:
     for file_list in filenames:
         for filename in file_list:
             files.append(filename)
+    is_error = False
     if len(files) == 0:
-        return None
+        is_error = True
     date = datetime.now()
     response = Response(
         channels=req.data.channels,
         is_backfill=req.data.is_backfill,
         fetched_at=date,
         files=files,
+        is_error=is_error
     )
     return response
 

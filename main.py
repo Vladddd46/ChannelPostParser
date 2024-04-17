@@ -55,13 +55,13 @@ async def posts_retriever():
                     )
                     results = await asyncio.gather(*tasks)
                     response = create_response(req=request_to_handle, filenames=results)
-                    if response != None:
+                    if response.is_error == False:
                         response = response.to_json()
                         response_queue.send_message(response)
                         live_response_queue.send_message(response)
                         logger.info(f"Response | {response}")
                     else:
-                        logger.info(f"Response | None")
+                        logger.info(f"Error occured during fetching. No response send.")
                 else:
                     logger.info("No task for fetching. Maybe some error occured")
             else:
