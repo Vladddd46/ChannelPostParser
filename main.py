@@ -16,6 +16,7 @@ from tmp.creds import (
     AWS_REGION_NAME,
     REQUEST_QUEUE_URL,
     RESPONSE_QUEUE_URL,
+    LIVE_RESPONSE_QUEUE_URL
 )
 
 
@@ -72,7 +73,7 @@ async def posts_retriever(read_queue_url):
 
     # queue for sending response
     response_queue = Queue(RESPONSE_QUEUE_URL, region_name=AWS_REGION_NAME)
-    live_response_queue = Queue(RESPONSE_QUEUE_URL, region_name=AWS_REGION_NAME)
+    live_response_queue = Queue(LIVE_RESPONSE_QUEUE_URL, region_name=AWS_REGION_NAME)
     analytics_response_queue = Queue(
         ANAL_RESPONSE_QUEUE_URL, region_name=AWS_REGION_NAME
     )
