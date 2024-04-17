@@ -54,6 +54,7 @@ class TelegramFetcher(FetcherInterface):
         offset_date: datetime = datetime.now(pytz.utc).date() + timedelta(days=1),
         from_date: datetime = None,
     ) -> List[str]:
+        await self.setup()
         files = []  # filenames, where data was saved
         number_of_retrieved_messages = 0
         logger.info(
@@ -130,6 +131,7 @@ class TelegramFetcher(FetcherInterface):
                 f"Exception while retrieving posts from chat={channel.channel_id}: {e}"
             )
             files = []
+        await self.cleanup()
         return files
 
     # overrride

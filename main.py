@@ -72,7 +72,7 @@ async def posts_retriever():
         except Exception as e:
             logger.error(f"Unknown error occured: {e}")
 
-    await posts_fetcher.cleanup()
+    # await posts_fetcher.cleanup()
 
 
 if __name__ == "__main__":

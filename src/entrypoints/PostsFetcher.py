@@ -60,7 +60,7 @@ class PostsFetcher:
         self._is_setup = False
         self._is_cleanup = True
 
-    @validate_setup
+    # @validate_setup
     async def get_last_post(
         self, channel_username: str, data_saver: Callable[[Channel], None]
     ) -> List[Channel]:
@@ -71,7 +71,7 @@ class PostsFetcher:
         res = await self._fetcher.get_last_post(channel_username, data_saver)
         return res
 
-    @validate_setup
+    # @validate_setup
     async def get_last_n_posts(
         self, channel_username: str, num: int, data_saver: Callable[[Channel], None]
     ) -> List[Channel]:
@@ -82,7 +82,7 @@ class PostsFetcher:
         data = await self._fetcher.get_last_n_posts(channel_username, num, data_saver)
         return data
 
-    @validate_setup
+    # @validate_setup
     async def get_posts_by_date_range(
         self,
         channel_username: str,
@@ -99,7 +99,7 @@ class PostsFetcher:
         )
         return data
 
-    @validate_setup
+    # @validate_setup
     async def get_posts_by_date(
         self,
         channel_username: str,
@@ -113,7 +113,7 @@ class PostsFetcher:
         data = await self._fetcher.get_posts_by_date(channel_username, date, data_saver)
         return data
 
-    @validate_setup
+    # @validate_setup
     async def get_post_by_id(
         self, channel_username: str, pid: int, data_saver: Callable[[Channel], None]
     ) -> List[Channel]:
@@ -133,5 +133,5 @@ async def get_posts_fetcher() -> PostsFetcher:
         exit(1)
     logger.info(f"Selected service SERVICE_NAME={SERVICE_NAME}")
     pf = PostsFetcher(fetcher)
-    await pf.setup()
+    # await pf.setup()
     return pf
