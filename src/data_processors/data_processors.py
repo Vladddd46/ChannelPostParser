@@ -56,10 +56,12 @@ def dump_data_to_ftp(channel: Channel, is_backfill: bool) -> str:
     logger.info(
         f"dump data into ftp: channel={channel_id_str} is_backfill={is_backfill}"
     )
+    my_path = FTP_SAVE_DIR_PATH
+    
     if is_backfill == True:
-        FTP_SAVE_DIR_PATH = FTP_SAVE_DIR_PATH + "/" + BACKFILL_DIR_NAME + "/"
+        my_path = my_path + "/" + BACKFILL_DIR_NAME + "/"
 
-    channel_dir = FTP_SAVE_DIR_PATH + "/" + channel_id_str
+    channel_dir = my_path + "/" + channel_id_str
     if _serv.directory_exists(channel_dir) == False:
         res = _serv.create_directory(channel_dir)
         logger.info(f"Directory={channel_dir} was created: {res}")
