@@ -53,7 +53,7 @@ jobs:
         ls -a
         cp -r app ./terraform/telegram-proc/
         cp -r app ./terraform/telegram-proc/app2
-        cd ./terraform/telegram-proc/app2/app/tmp
+        cd ./terraform/telegram-proc/app2/tmp
         echo "${{ secrets.ENVPY2 }}" | base64 --decode > creds.py
         ls -a
         
