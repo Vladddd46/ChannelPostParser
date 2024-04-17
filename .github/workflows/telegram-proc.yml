@@ -52,7 +52,9 @@ jobs:
       run: |
         ls -a
         cp -r app ./terraform/telegram-proc/
-        cd ./terraform/telegram-proc/
+        cp -r app ./terraform/telegram-proc/app2
+        cd ./terraform/telegram-proc/app2/tmp
+        echo "${{ secrets.ENVPY2 }}" | base64 --decode > creds.py
         ls -a
         
     - name: Build Docker image
@@ -61,6 +63,14 @@ jobs:
         docker build --platform=linux/amd64 --no-cache -f Dockerfile -t tg-proc .
         docker save tg-proc > "tg-proc.tar"
         ls -a
+
+    - name: Build Docker2 image
+      run: |
+        cd ./terraform/telegram-proc/
+        docker build --platform=linux/amd64 --no-cache -f Dockerfile2 -t tg-proc2 .
+        docker save tg-proc2 > "tg-proc2.tar"
+        ls -a
+        
     - name: add secret
       run: |
         cd ./terraform/telegram-proc/
