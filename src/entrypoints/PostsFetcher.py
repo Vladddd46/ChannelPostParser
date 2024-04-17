@@ -62,24 +62,35 @@ class PostsFetcher:
 
     # @validate_setup
     async def get_last_post(
-        self, channel_username: str, data_saver: Callable[[Channel], None]
+        self,
+        channel_username: str,
+        data_saver: Callable[[Channel], None],
+        is_backfill: bool,
     ) -> List[Channel]:
         logger.info(
             f"Request=get_last_post, params: channel_username={channel_username}",
             only_debug_mode=True,
         )
-        res = await self._fetcher.get_last_post(channel_username, data_saver)
+        res = await self._fetcher.get_last_post(
+            channel_username, data_saver, is_backfill
+        )
         return res
 
     # @validate_setup
     async def get_last_n_posts(
-        self, channel_username: str, num: int, data_saver: Callable[[Channel], None]
+        self,
+        channel_username: str,
+        num: int,
+        data_saver: Callable[[Channel], None],
+        is_backfill: bool,
     ) -> List[Channel]:
         logger.info(
             f"Request=get_last_n_posts, params: channel_username={channel_username}, num={num}",
             only_debug_mode=True,
         )
-        data = await self._fetcher.get_last_n_posts(channel_username, num, data_saver)
+        data = await self._fetcher.get_last_n_posts(
+            channel_username, num, data_saver, is_backfill
+        )
         return data
 
     # @validate_setup
@@ -89,13 +100,14 @@ class PostsFetcher:
         from_date: datetime,
         to_date: datetime,
         data_saver: Callable[[Channel], None],
+        is_backfill: bool,
     ) -> List[Channel]:
         logger.info(
             f"Request=get_posts_by_date_range, params: channel_username={channel_username}, from={from_date}, to={to_date}",
             only_debug_mode=True,
         )
         data = await self._fetcher.get_posts_by_date_range(
-            channel_username, from_date, to_date, data_saver
+            channel_username, from_date, to_date, data_saver, is_backfill
         )
         return data
 
@@ -105,6 +117,7 @@ class PostsFetcher:
         channel_username: str,
         date: datetime,
         data_saver: Callable[[Channel], None],
+        is_backfill: bool,
     ) -> List[Channel]:
         logger.info(
             f"Request=get_posts_by_date, params: channel_username={channel_username}, date={date}",
@@ -115,10 +128,16 @@ class PostsFetcher:
 
     # @validate_setup
     async def get_post_by_id(
-        self, channel_username: str, pid: int, data_saver: Callable[[Channel], None]
+        self,
+        channel_username: str,
+        pid: int,
+        data_saver: Callable[[Channel], None],
+        is_backfill: bool,
     ) -> List[Channel]:
         logger.info(f"Request=get_post_by_id, params: pid={pid}", only_debug_mode=True)
-        data = await self._fetcher.get_post_by_id(channel_username, pid, data_saver)
+        data = await self._fetcher.get_post_by_id(
+            channel_username, pid, data_saver, is_backfill
+        )
         return data
 
 

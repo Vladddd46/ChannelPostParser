@@ -13,7 +13,7 @@ class Response:
         is_backfill: bool,
         fetched_at: datetime,
         files: List[str],
-        is_error: bool=False
+        is_error: bool = False,
     ):
         self._channels = channels
         self._is_backfill = is_backfill
@@ -59,8 +59,7 @@ class Response:
 
     @is_error.setter
     def is_error(self, is_error: bool) -> None:
-        self._is_error= is_error
-
+        self._is_error = is_error
 
     def to_json(self) -> dict:
         return {

@@ -13,15 +13,16 @@ from config import (
     FTP_SAVE_DIR_PATH,
     INDENT_FOR_SAVED_JSON_DATA,
     RETRIVED_DATA_STORAGE_PATH,
+    BACKFILL_DIR_NAME,
 )
 from src.entities.Channel import Channel
 from src.entrypoints.FtpServer import FtpServer
 from tmp.creds import FTP_HOSTNAME, FTP_PASSWORD, FTP_PORT, FTP_USERNAME
 from src.utils.Logger import logger
 from src.utils.Utils import generate_filename
-import config # Crutch
 
-def _dump_data_to_json(channel: Channel) -> str:
+
+def _dump_data_to_json(channel: Channel, is_backfill: bool) -> str:
     fname = generate_filename(tag=str(channel.channel_id))
     path = RETRIVED_DATA_STORAGE_PATH + fname
 
@@ -48,30 +49,16 @@ if DATA_PROCESSOR == "ftp":
     _serv = FtpServer(FTP_HOSTNAME, FTP_PORT, FTP_USERNAME, FTP_PASSWORD)
 
 
-def _dump_data_to_ftp(channel: Channel) -> str:
+def _dump_data_to_ftp(channel: Channel, is_backfill: bool) -> str:
     channel_id_str = str(channel.channel_id)
     fname = generate_filename(tag=channel_id_str)
     current_date = datetime.now().date()
+    logger.info(
+        f"dump data into ftp: channel={channel_id_str} is_backfill={is_backfill}"
+    )
 
-    # TODO: Crutch:
-    logger.info(f" config.IS_BACKFILL: {config.IS_BACKFILL}")
-    if config.IS_BACKFILL == True:
-
-        history_path = FTP_SAVE_DIR_PATH + "/history/"
-
-        if _serv.directory_exists(history_path) == False:
-            res = _serv.create_directory(history_path)
-            logger.info(f"Directory={history_path} was created: {res}")
-
-        tmp_channel_folder = history_path + channel_id_str
-        if _serv.directory_exists(tmp_channel_folder) == False:
-            res = _serv.create_directory(tmp_channel_folder)
-            logger.info(f"Directory={tmp_channel_folder} was created: {res}")
-
-        path_to_save_file = tmp_channel_folder + "/"
-        _serv.save_json(data=channel.to_json(), path=path_to_save_file, filename=fname)
-        return path_to_save_file + fname
-    ## end of crutch
+    if is_backfill == True:
+        FTP_SAVE_DIR_PATH += "/" + BACKFILL_DIR_NAME + "/"
 
     channel_dir = FTP_SAVE_DIR_PATH + "/" + channel_id_str
     if _serv.directory_exists(channel_dir) == False:

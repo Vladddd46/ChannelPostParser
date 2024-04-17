@@ -8,7 +8,13 @@ from datetime import datetime, timedelta, timezone
 from typing import Callable, List
 
 import pytz
-from config import COMMENTS_ENABLED, NUMBER_OF_MESSAGES_TO_SAVE, SESSION, TIMEZONE, COMMENTS_LIMIT
+from config import (
+    COMMENTS_ENABLED,
+    NUMBER_OF_MESSAGES_TO_SAVE,
+    SESSION,
+    TIMEZONE,
+    COMMENTS_LIMIT,
+)
 from src.adaptors.TelethonAdaptors import (
     convert_telethon_channel,
     convert_telethon_comment,
@@ -47,6 +53,7 @@ class TelegramFetcher(FetcherInterface):
     #
     async def __retrieve_posts(
         self,
+        is_backfill: bool,
         channel_username: str,
         limit: int,
         message_filter: Callable[[], bool],
@@ -60,7 +67,6 @@ class TelegramFetcher(FetcherInterface):
         logger.info(
             f"Requested to retrieve posts from \n\tchannel={channel_username}\n\tlimit={limit}"
         )
-
         # empty channel
         # TODO: this is not the best solution. Think what should return this func in case of exception or any error.
         #       should it return anything at all? because datasaver do further data processing.
@@ -89,7 +95,10 @@ class TelegramFetcher(FetcherInterface):
                             async for comment in self.client.iter_messages(
                                 telethon_channel, reply_to=message.id
                             ):
-                                if COMMENTS_LIMIT != -1 and comments_limit >= COMMENTS_LIMIT:
+                                if (
+                                    COMMENTS_LIMIT != -1
+                                    and comments_limit >= COMMENTS_LIMIT
+                                ):
                                     break
                                 from_user = User(-1, "UNKNOWN_USER")
                                 try:
@@ -119,12 +128,12 @@ class TelegramFetcher(FetcherInterface):
                     # this approach is used in order not to load memory with
                     # big amount of data.
                     if number_of_retrieved_messages > NUMBER_OF_MESSAGES_TO_SAVE:
-                        filename = data_saver(channel)
+                        filename = data_saver(channel, is_backfill)
                         files.append(filename)
                         number_of_retrieved_messages = 0
                         channel.posts = []
             if len(channel.posts) != 0:
-                filename = data_saver(channel)
+                filename = data_saver(channel, is_backfill)
                 files.append(filename)
         except Exception as e:
             logger.error(
@@ -148,10 +157,14 @@ class TelegramFetcher(FetcherInterface):
 
     # overrride
     async def get_last_post(
-        self, channel_username: str, data_saver: Callable[[Channel], None]
+        self,
+        channel_username: str,
+        data_saver: Callable[[Channel], None],
+        is_backfill: bool,
     ):
         mfilter = lambda message: True
         data = await self.__retrieve_posts(
+            is_backfill=is_backfill,
             channel_username=channel_username,
             limit=1,
             message_filter=mfilter,
@@ -161,10 +174,15 @@ class TelegramFetcher(FetcherInterface):
 
     # overrride
     async def get_last_n_posts(
-        self, channel_username: str, num: int, data_saver: Callable[[Channel], None]
+        self,
+        channel_username: str,
+        num: int,
+        data_saver: Callable[[Channel], None],
+        is_backfill: bool,
     ):
         mfilter = lambda message: True
         data = await self.__retrieve_posts(
+            is_backfill=is_backfill,
             channel_username=channel_username,
             limit=num,
             message_filter=mfilter,
@@ -179,6 +197,7 @@ class TelegramFetcher(FetcherInterface):
         from_date: datetime,
         to_date: datetime,
         data_saver: Callable[[Channel], None],
+        is_backfill: bool,
     ):
         from_date_with_timezone = _timezone.localize(
             datetime.combine(from_date, datetime.min.time())
@@ -189,6 +208,7 @@ class TelegramFetcher(FetcherInterface):
         mfilter = lambda message: not message.date < from_date_with_timezone
         max_int = sys.maxsize
         data = await self.__retrieve_posts(
+            is_backfill=is_backfill,
             channel_username=channel_username,
             message_filter=mfilter,
             limit=max_int,
@@ -204,6 +224,7 @@ class TelegramFetcher(FetcherInterface):
         channel_username: str,
         date: datetime,
         data_saver: Callable[[Channel], None],
+        is_backfill: bool,
     ):
         data = await self.get_posts_by_date_range(
             channel_username=channel_username,
@@ -215,11 +236,16 @@ class TelegramFetcher(FetcherInterface):
 
     # overrride
     async def get_post_by_id(
-        self, channel_username: str, pid: int, data_saver: Callable[[Channel], None]
+        self,
+        channel_username: str,
+        pid: int,
+        data_saver: Callable[[Channel], None],
+        is_backfill: bool,
     ):
         mfilter = lambda message: message.id == pid
         max_int = sys.maxsize
         data = await self.__retrieve_posts(
+            is_backfill=is_backfill,
             channel_username=channel_username,
             message_filter=mfilter,
             limit=max_int,

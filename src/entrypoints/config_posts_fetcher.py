@@ -14,7 +14,7 @@ days = 50
 _current_date = datetime.now().date()
 fromdate = _current_date - timedelta(days=days)
 
-_channels = ["DeepStateUA"]#[-1001101170442]#["ded_shinibi"]
+_channels = ["DeepStateUA"]  # [-1001101170442]#["ded_shinibi"]
 
 # _channels = [
 #     "ssternenko",
@@ -55,7 +55,7 @@ predefined_config = {
     "channels": _channels,
     "function": "get_posts_by_date_range",
     "params": {"from": fromdate, "to": _current_date},
-    "is_backfill": True
+    "is_backfill": False,
 }
 
 # predefined_config = {

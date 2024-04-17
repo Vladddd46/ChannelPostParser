@@ -45,7 +45,9 @@ def convert_predefined_config_to_request(predefined_config) -> Request:
         result = RequestCode.ERROR
         error_msg = "No is_backfill in predefined config"
 
-    rdata = RequestData(channels=channels, name=name, params=params, is_backfill=is_backfill)
+    rdata = RequestData(
+        channels=channels, name=name, params=params, is_backfill=is_backfill
+    )
     ret_request = Request(code=result, data=rdata, rid=0, error_msg=error_msg)
     return ret_request
 
@@ -89,6 +91,7 @@ def convert_message_to_request(message):
     )
     ret_request = Request(code=result, data=rdata, rid=0, error_msg=error_msg)
     return ret_request
+
 
 def convert_str_to_date(s: str):
     d = datetime.fromisoformat(s)

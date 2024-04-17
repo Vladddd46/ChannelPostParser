@@ -19,14 +19,14 @@ from src.adaptors.RequestFormatAdaptors import (
     convert_message_to_request,
 )
 from src.entities import Request
-from tmp.creds import REQUEST_QUEUE_URL, AWS_REGION_NAME
+from tmp.creds import AWS_REGION_NAME
 
 
 class PostsFetcherConfigurator:
-    def __init__(self):
+    def __init__(self, queue_url: str = ""):
         self.queue = None
         if USE_PREDEFINED_REQUESTS == False:
-            self.queue = Queue(url=REQUEST_QUEUE_URL, region_name=AWS_REGION_NAME)
+            self.queue = Queue(url=queue_url, region_name=AWS_REGION_NAME)
 
     def get_request(self) -> Request:
         logger.info(
