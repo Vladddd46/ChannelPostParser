@@ -22,7 +22,7 @@ from src.utils.Logger import logger
 from src.utils.Utils import generate_filename
 
 
-def _dump_data_to_json(channel: Channel, is_backfill: bool) -> str:
+def dump_data_to_json(channel: Channel, is_backfill: bool) -> str:
     fname = generate_filename(tag=str(channel.channel_id))
     path = RETRIVED_DATA_STORAGE_PATH + fname
 
@@ -49,16 +49,15 @@ if DATA_PROCESSOR == "ftp":
     _serv = FtpServer(FTP_HOSTNAME, FTP_PORT, FTP_USERNAME, FTP_PASSWORD)
 
 
-def _dump_data_to_ftp(channel: Channel, is_backfill: bool) -> str:
+def dump_data_to_ftp(channel: Channel, is_backfill: bool) -> str:
     channel_id_str = str(channel.channel_id)
     fname = generate_filename(tag=channel_id_str)
     current_date = datetime.now().date()
     logger.info(
         f"dump data into ftp: channel={channel_id_str} is_backfill={is_backfill}"
     )
-
     if is_backfill == True:
-        FTP_SAVE_DIR_PATH += "/" + BACKFILL_DIR_NAME + "/"
+        FTP_SAVE_DIR_PATH = FTP_SAVE_DIR_PATH + "/" + BACKFILL_DIR_NAME + "/"
 
     channel_dir = FTP_SAVE_DIR_PATH + "/" + channel_id_str
     if _serv.directory_exists(channel_dir) == False:
@@ -79,9 +78,9 @@ def _dump_data_to_ftp(channel: Channel, is_backfill: bool) -> str:
 def get_data_processor():
     # Eeach data processor should return fname.
     if DATA_PROCESSOR == "json":
-        return _dump_data_to_json
+        return dump_data_to_json
     elif DATA_PROCESSOR == "ftp":
-        return _dump_data_to_ftp
+        return dump_data_to_ftp
     else:
         logger.error(f"Not supported DATA_PROCESSOR={DATA_PROCESSOR} in config.py")
         exit(1)
