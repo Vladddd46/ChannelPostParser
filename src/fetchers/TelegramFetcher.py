@@ -67,6 +67,12 @@ class TelegramFetcher(FetcherInterface):
         logger.info(
             f"Requested to retrieve posts from \n\tchannel={channel_username}\n\tlimit={limit}"
         )
+
+        if len(str(channel_username)) > 3 and str(channel_username)[0:4] == "-100":
+            channel_username = str(channel_username)[4:]
+            print(channel_username)
+        else:
+            print("else")
         # empty channel
         # TODO: this is not the best solution. Think what should return this func in case of exception or any error.
         #       should it return anything at all? because datasaver do further data processing.

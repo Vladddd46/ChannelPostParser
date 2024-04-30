@@ -5,8 +5,8 @@
 defines, which function will be user for processing data
 after retrieval from service.
 """
-# DATA_PROCESSOR = "json"  # saves fetched data in json.
-DATA_PROCESSOR = "ftp" # sends fetched data to ftp.
+DATA_PROCESSOR = "json"  # saves fetched data in json.
+# DATA_PROCESSOR = "ftp" # sends fetched data to ftp.
 
 """
 | OTHER CONFIG |
@@ -28,14 +28,14 @@ COMMENTS_LIMIT - limit for saved comments per post. [works only when COMMENTS_EN
 """
 INDENT_FOR_SAVED_JSON_DATA = 0
 TIMEZONE = "Europe/Kiev"
-NUMBER_OF_MESSAGES_TO_SAVE = 10000
-USE_PREDEFINED_REQUESTS = False
-DEBUG_MODE = False
+NUMBER_OF_MESSAGES_TO_SAVE = 100
+USE_PREDEFINED_REQUESTS = True
+DEBUG_MODE = True
 COMMENTS_ENABLED = True
 COMMENTS_LIMIT = -1
 QUEUE_READ_SLEEP_TIME = 1  # in seconds
 LOG_ENABLED = True
-WRITE_LOG_IN_STDOUT = True
+WRITE_LOG_IN_STDOUT = False
 
 # ****** Rarely Used Config ****** #
 

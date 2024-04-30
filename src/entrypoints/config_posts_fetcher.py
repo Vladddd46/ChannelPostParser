@@ -11,10 +11,10 @@ year = 365
 two_years = year * 2
 days = 50
 
-_current_date = datetime.now().date()
-fromdate = _current_date - timedelta(days=days)
+_current_date = datetime.now().date() - timedelta(days=5)
+fromdate = _current_date - timedelta(days=7)
 
-_channels = ["DeepStateUA"]  # [-1001101170442]#["ded_shinibi"]
+_channels = [-1001059792804]#["ded_shinibi"] #["DeepStateUA"]  # [-1001101170442]#["ded_shinibi"]
 
 # _channels = [
 #     "ssternenko",
@@ -55,7 +55,7 @@ predefined_config = {
     "channels": _channels,
     "function": "get_posts_by_date_range",
     "params": {"from": fromdate, "to": _current_date},
-    "is_backfill": False,
+    "is_backfill": True,
 }
 
 # predefined_config = {
